@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type DB struct {
@@ -30,4 +31,8 @@ func (db *DB) connect(host string, username string, password string, dbName stri
 		panic(err.Error())
 	}
 	return connection
+}
+
+func (db *DB) Connect() *gorm.DB {
+	return db.Connection
 }

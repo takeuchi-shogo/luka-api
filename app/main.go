@@ -7,5 +7,6 @@ func main() {
 	db := infrastructure.NewDB(config)
 
 	r := infrastructure.NewRouting(config, db)
+
 	r.Run(r.Port)
 }
