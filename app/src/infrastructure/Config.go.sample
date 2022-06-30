@@ -1,8 +1,8 @@
-package infrastructure
+// package infrastructure
 
-type Config struct {
-}
+// type Config struct {
+// }
 
-func NewConfig() *Config {
-	return &Config{}
-}
+// func NewConfig() *Config {
+// 	return &Config{}
+// }
