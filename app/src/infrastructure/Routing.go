@@ -1,16 +1,19 @@
 package infrastructure
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/takeuchi-shogo/luka-api/src/interface/controllers/product"
+)
 
 type Routing struct {
-	DB   *DB
+	// DB   *DB
 	Gin  *gin.Engine
 	Port string
 }
 
-func NewRouting(c *Config, db *DB) *Routing {
+func NewRouting(c *Config) *Routing {
 	r := &Routing{
-		DB:   db,
+		// DB:   db,
 		Gin:  gin.Default(),
 		Port: c.Routing.Port,
 	}
@@ -20,9 +23,18 @@ func NewRouting(c *Config, db *DB) *Routing {
 }
 
 func (r *Routing) setRouting() {
+
+	usersController := product.NewUsersController()
 	v1 := r.Gin.Group("/v1/product")
 	{
-		v1.GET("/test", func(ctx *gin.Context) { ctx.JSON(200, "kokokoko") })
+
+		// Users
+		v1.GET("/users", func(ctx *gin.Context) { usersController.GetList(ctx) })
+
+		v1.GET("/users/:id", func(ctx *gin.Context) { usersController.Get(ctx) })
+
+		// Test用
+		v1.GET("/test", func(ctx *gin.Context) { ctx.JSON(200, "testtest") })
 	}
 }
 
