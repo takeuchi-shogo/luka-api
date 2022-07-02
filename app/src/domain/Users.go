@@ -4,6 +4,7 @@ type Users struct {
 	ID          int    `json:"id"`
 	DisplayName string `json:"displayName"`
 	ScreenName  string `json:"screenName"`
+	Password    string `json:"password"`
 	Email       string `json:"email"`
 	Age         int    `json:"age"`
 	Gender      string `json:"gender"`

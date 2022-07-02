@@ -12,7 +12,7 @@ type UserInteractor struct{}
 func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultStatus *usecase.ResultStatus) {
 	err := errors.New("テスト")
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, 2010)
+		return domain.Users{}, usecase.NewResultStatus(400, domain.GetUserAccountError)
 	}
-	return foundUser, usecase.NewResultStatus(200, 0)
+	return foundUser, usecase.NewResultStatus(200, "")
 }

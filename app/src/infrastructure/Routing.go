@@ -6,14 +6,14 @@ import (
 )
 
 type Routing struct {
-	// DB   *DB
+	DB   *DB
 	Gin  *gin.Engine
 	Port string
 }
 
-func NewRouting(c *Config) *Routing {
+func NewRouting(c *Config, db *DB) *Routing {
 	r := &Routing{
-		// DB:   db,
+		DB:   db,
 		Gin:  gin.Default(),
 		Port: c.Routing.Port,
 	}
@@ -24,9 +24,12 @@ func NewRouting(c *Config) *Routing {
 
 func (r *Routing) setRouting() {
 
+	tokensController := product.NewTokensController(r.DB)
 	usersController := product.NewUsersController()
 	v1 := r.Gin.Group("/v1/product")
 	{
+		// Tokens
+		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })
 
 		// Users
 		v1.GET("/users", func(ctx *gin.Context) { usersController.GetList(ctx) })

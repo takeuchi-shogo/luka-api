@@ -23,9 +23,9 @@ func (c *UsersController) Get(ctx controllers.Context) {
 	user, res := c.Interactor.Get(domain.Users{
 		ID: userID,
 	})
-	if res.ErrorMessage.DeveloperError != nil {
+	if res.ErrorMessage != nil {
 		// ここでLogとしてDevErrorを流す？
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.UserError.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 

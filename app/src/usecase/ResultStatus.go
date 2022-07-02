@@ -1,18 +1,18 @@
 package usecase
 
-import "github.com/takeuchi-shogo/luka-api/src/domain"
+import "errors"
 
 type ResultStatus struct {
-	ErrorMessage *domain.Error
+	ErrorMessage error
 	StatusCode   int // ステータスコード
 }
 
-func NewResultStatus(code int, errorCode int) *ResultStatus {
+func NewResultStatus(code int, errorMessage string) *ResultStatus {
 
 	resultStatus := new(ResultStatus)
 
 	resultStatus.StatusCode = code
-	resultStatus.ErrorMessage = domain.NewError(errorCode)
+	resultStatus.ErrorMessage = errors.New(errorMessage)
 
 	return resultStatus
 }
