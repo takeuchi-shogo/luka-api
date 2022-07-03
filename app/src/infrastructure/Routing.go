@@ -33,6 +33,7 @@ func (r *Routing) setRouting() {
 
 		// Users
 		v1.GET("/users", func(ctx *gin.Context) { usersController.GetList(ctx) })
+		v1.POST("/users", func(ctx *gin.Context) { usersController.Post(ctx) })
 
 		v1.GET("/users/:id", func(ctx *gin.Context) { usersController.Get(ctx) })
 

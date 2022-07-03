@@ -35,3 +35,30 @@ func (c *UsersController) Get(ctx controllers.Context) {
 func (c *UsersController) GetList(ctx controllers.Context) {
 
 }
+
+func (controller *UsersController) Post(ctx controllers.Context) {
+
+	displayName := ctx.PostForm("displayName")
+	screenName := ctx.PostForm("screenName")
+	password := ctx.PostForm("password")
+	email := ctx.PostForm("email")
+	age, _ := strconv.Atoi(ctx.PostForm("age"))
+	gender := ctx.PostForm("gender")
+	prefecture := ctx.PostForm("prefecture")
+
+	newUser, res := controller.Interactor.Create(domain.Users{
+		DisplayName: displayName,
+		ScreenName:  screenName,
+		Password:    password,
+		Email:       email,
+		Age:         age,
+		Gender:      gender,
+		Prefecture:  prefecture,
+	})
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.StatusCode, controllers.NewH("success", newUser))
+}
