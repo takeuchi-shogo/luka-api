@@ -9,6 +9,18 @@ import (
 
 type ThreadRepository struct{}
 
+func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Threads, err error) {
+
+	foundThread = domain.Threads{}
+
+	db.Where("id = ?", id).First(&foundThread)
+	if foundThread.ID <= 0 {
+		return domain.Threads{}, err
+	}
+
+	return foundThread, nil
+}
+
 func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread domain.Threads, err error) {
 
 	newThread = domain.Threads{}
@@ -20,6 +32,7 @@ func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread
 	currentTime := time.Now().Unix()
 	newThread.CreatedAt = currentTime
 	newThread.UpdatedAt = currentTime
+	newThread.DeletedAt = nil
 
 	db.NewRecord(&newThread)
 	err = db.Create(&newThread).Error
@@ -28,4 +41,27 @@ func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread
 	}
 
 	return newThread, nil
+}
+
+func (r *ThreadRepository) Save(db *gorm.DB, thread domain.Threads) (updateThread domain.Threads, err error) {
+
+	updateThread = domain.Threads{}
+
+	updateThread.ID = thread.ID
+	updateThread.UserID = thread.UserID
+	updateThread.Title = thread.Title
+	updateThread.Description = thread.Description
+	updateThread.CreatedAt = thread.CreatedAt
+	updateThread.UpdatedAt = time.Now().Unix()
+	updateThread.DeletedAt = nil
+
+	if err := db.Save(&updateThread).Error; err != nil {
+		return domain.Threads{}, err
+	}
+
+	return updateThread, nil
+}
+
+func (r *ThreadRepository) Delete(db *gorm.DB, thread domain.Threads) error {
+	return db.Delete(&thread).Error
 }

@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 )
@@ -16,5 +18,24 @@ func (r *UserRepository) FindByScreenName(db *gorm.DB, screenName string) (user 
 }
 
 func (r *UserRepository) Create(db *gorm.DB, user domain.Users) (newUser domain.Users, err error) {
-	return newUser, nil
+
+	newUser = domain.Users{}
+
+	newUser.DisplayName = user.DisplayName
+	newUser.ScreenName = user.ScreenName
+	newUser.Password = user.GetPassword(user.Password)
+	newUser.Email = user.Email
+	newUser.Age = user.Age
+	newUser.Gender = user.Gender
+	newUser.Prefecture = user.Prefecture
+
+	currentTime := time.Now().Unix()
+	newUser.CreatedAt = currentTime
+	newUser.UpdatedAt = currentTime
+	newUser.DeletedAt = nil
+
+	db.NewRecord(&newUser)
+	err = db.Create(&newUser).Error
+
+	return newUser, err
 }

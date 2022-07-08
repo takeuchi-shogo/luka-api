@@ -21,7 +21,7 @@ type Users struct {
 }
 
 // パスワードのハッシュ化
-func (u *Users) SetPassword(password string) string {
+func (u *Users) GetPassword(password string) string {
 	var data [sha256.Size]byte
 	data = sha256.Sum256(([]byte(password)))
 	return fmt.Sprintf("%x", data)

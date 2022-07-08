@@ -15,9 +15,16 @@ type UserInteractor struct {
 func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultStatus *usecase.ResultStatus) {
 	err := errors.New("テスト")
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.GetUserAccountError)
+		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrGetUserAccount)
 	}
 	return foundUser, usecase.NewResultStatus(200, "")
+}
+
+func (i *UserInteractor) GetList(userID int) (users []domain.Users, resultStatus *usecase.ResultStatus) {
+
+	// db := i.DB.Connect()
+
+	return users, usecase.NewResultStatus(200, "")
 }
 
 func (i *UserInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
@@ -30,7 +37,7 @@ func (i *UserInteractor) Create(user domain.Users) (newUser domain.Users, result
 
 	newUser, err := i.User.Create(db, user)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.CreateUserAccountError)
+		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrCreateUserAccount)
 	}
 	return newUser, usecase.NewResultStatus(200, "")
 }

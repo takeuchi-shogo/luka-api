@@ -38,11 +38,11 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 
 	foundUser, err := i.User.FindByScreenName(db, user.ScreenName)
 	if err != nil {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.SignInError)
+		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrSignIn)
 	}
 
 	if user.Password != foundUser.Password {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.SignInError)
+		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrSignIn)
 	}
 
 	newUserToken := domain.UserTokens{}
@@ -50,7 +50,7 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 
 	token, err := i.UserToken.Create(db, newUserToken)
 	if err != nil {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.CreateUserTokenError)
+		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrCreateUserToken)
 	}
 
 	return token, usecase.NewResultStatus(200, "")

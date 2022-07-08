@@ -27,14 +27,19 @@ func (r *Routing) setRouting() {
 	commentsController := product.NewCommentsController(r.DB)
 	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
-	usersController := product.NewUsersController()
+	usersController := product.NewUsersController(r.DB)
 	v1 := r.Gin.Group("/v1/product")
 	{
 		// Comment To Threads
 		v1.POST("/comments", func(ctx *gin.Context) { commentsController.Post(ctx) })
 
 		// Threads
+		v1.GET("/threads", func(ctx *gin.Context) { threadsController.GetList(ctx) })
 		v1.POST("/threads", func(ctx *gin.Context) { threadsController.Post(ctx) })
+
+		v1.GET("threads/:id", func(ctx *gin.Context) { threadsController.Get(ctx) })
+		v1.PATCH("/threads/:id", func(ctx *gin.Context) { threadsController.Patch(ctx) })
+		v1.DELETE("/threads/:id", func(ctx *gin.Context) { threadsController.Delete(ctx) })
 
 		// Tokens
 		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })
