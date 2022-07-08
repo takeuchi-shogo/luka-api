@@ -19,13 +19,13 @@ func NewCommentsController(db database.DB) *CommentsController {
 	}
 }
 
-func (controller *CommentsController) Post(ctx controllers.Context) {
+func (c *CommentsController) Post(ctx controllers.Context) {
 
 	threadID, _ := strconv.Atoi(ctx.PostForm("threadId"))
 	userID, _ := strconv.Atoi(ctx.PostForm("userId"))
 	content := ctx.PostForm("content")
 
-	newComment, res := controller.Interactor.Create(domain.Comments{
+	newComment, res := c.Interactor.Create(domain.Comments{
 		ThreadID: threadID,
 		UserID:   userID,
 		Content:  content,

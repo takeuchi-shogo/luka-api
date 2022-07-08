@@ -12,7 +12,7 @@ type UserInteractor struct {
 	User usecase.UserRepository
 }
 
-func (interactor *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultStatus *usecase.ResultStatus) {
+func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultStatus *usecase.ResultStatus) {
 	err := errors.New("テスト")
 	if err != nil {
 		return domain.Users{}, usecase.NewResultStatus(400, domain.GetUserAccountError)
@@ -20,15 +20,15 @@ func (interactor *UserInteractor) Get(user domain.Users) (foundUser domain.Users
 	return foundUser, usecase.NewResultStatus(200, "")
 }
 
-func (interactor *UserInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
+func (i *UserInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
 
-	db := interactor.DB.Connect()
+	db := i.DB.Connect()
 
-	if _, err := interactor.User.FindByScreenName(db, user.ScreenName); err == nil {
+	if _, err := i.User.FindByScreenName(db, user.ScreenName); err == nil {
 		return domain.Users{}, usecase.NewResultStatus(400, domain.ExistUserScreenName)
 	}
 
-	newUser, err := interactor.User.Create(db, user)
+	newUser, err := i.User.Create(db, user)
 	if err != nil {
 		return domain.Users{}, usecase.NewResultStatus(400, domain.CreateUserAccountError)
 	}

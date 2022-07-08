@@ -9,7 +9,7 @@ import (
 
 type ThreadRepository struct{}
 
-func (repo *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread domain.Threads, err error) {
+func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread domain.Threads, err error) {
 
 	newThread = domain.Threads{}
 

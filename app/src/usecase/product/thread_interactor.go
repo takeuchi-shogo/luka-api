@@ -11,11 +11,11 @@ type ThreadInteractor struct {
 	User   usecase.UserRepository
 }
 
-func (interactor *ThreadInteractor) Post(thread domain.Threads) (newThead domain.Threads, resultStatus *usecase.ResultStatus) {
+func (i *ThreadInteractor) Post(thread domain.Threads) (newThead domain.Threads, resultStatus *usecase.ResultStatus) {
 
-	db := interactor.DB.Connect()
+	db := i.DB.Connect()
 
-	user, err := interactor.User.FindByID(db, thread.UserID)
+	user, err := i.User.FindByID(db, thread.UserID)
 	if err != nil {
 		return domain.Threads{}, usecase.NewResultStatus(404, domain.ErrUserNotFound)
 	}
@@ -24,7 +24,7 @@ func (interactor *ThreadInteractor) Post(thread domain.Threads) (newThead domain
 	//
 	//
 
-	newThead, err = interactor.Thread.Create(db, domain.Threads{
+	newThead, err = i.Thread.Create(db, domain.Threads{
 		UserID:      user.ID,
 		Title:       thread.Title,
 		Description: thread.Description,

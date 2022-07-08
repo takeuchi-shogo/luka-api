@@ -13,11 +13,11 @@ type UserTokenInteractor struct {
 	UserToken usecase.UserTokenRepository
 }
 
-func (interactor *UserTokenInteractor) Authorization(accessToken string) (token domain.UserTokens, resultStatus *usecase.ResultStatus) {
+func (i *UserTokenInteractor) Authorization(accessToken string) (token domain.UserTokens, resultStatus *usecase.ResultStatus) {
 
-	db := interactor.DB.Connect()
+	db := i.DB.Connect()
 
-	token, err := interactor.UserToken.FindByToken(db, accessToken)
+	token, err := i.UserToken.FindByToken(db, accessToken)
 	if err != nil {
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrAuthorization)
 	}
@@ -32,11 +32,11 @@ func (interactor *UserTokenInteractor) Authorization(accessToken string) (token 
 	return token, usecase.NewResultStatus(200, "")
 }
 
-func (interactor *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTokens, resultStatus *usecase.ResultStatus) {
+func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTokens, resultStatus *usecase.ResultStatus) {
 
-	db := interactor.DB.Connect()
+	db := i.DB.Connect()
 
-	foundUser, err := interactor.User.FindByScreenName(db, user.ScreenName)
+	foundUser, err := i.User.FindByScreenName(db, user.ScreenName)
 	if err != nil {
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.SignInError)
 	}
@@ -48,7 +48,7 @@ func (interactor *UserTokenInteractor) Create(user domain.Users) (newToken domai
 	newUserToken := domain.UserTokens{}
 	newUserToken.UserID = foundUser.ID
 
-	token, err := interactor.UserToken.Create(db, newUserToken)
+	token, err := i.UserToken.Create(db, newUserToken)
 	if err != nil {
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.CreateUserTokenError)
 	}

@@ -7,7 +7,7 @@ import (
 
 type UserTokenRepository struct{}
 
-func (repo *UserTokenRepository) FindByToken(db *gorm.DB, token string) (foundToken domain.UserTokens, err error) {
+func (r *UserTokenRepository) FindByToken(db *gorm.DB, token string) (foundToken domain.UserTokens, err error) {
 
 	foundToken = domain.UserTokens{}
 

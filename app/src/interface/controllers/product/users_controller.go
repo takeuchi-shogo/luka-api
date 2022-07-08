@@ -36,7 +36,7 @@ func (c *UsersController) GetList(ctx controllers.Context) {
 
 }
 
-func (controller *UsersController) Post(ctx controllers.Context) {
+func (c *UsersController) Post(ctx controllers.Context) {
 
 	displayName := ctx.PostForm("displayName")
 	screenName := ctx.PostForm("screenName")
@@ -46,7 +46,7 @@ func (controller *UsersController) Post(ctx controllers.Context) {
 	gender := ctx.PostForm("gender")
 	prefecture := ctx.PostForm("prefecture")
 
-	newUser, res := controller.Interactor.Create(domain.Users{
+	newUser, res := c.Interactor.Create(domain.Users{
 		DisplayName: displayName,
 		ScreenName:  screenName,
 		Password:    password,

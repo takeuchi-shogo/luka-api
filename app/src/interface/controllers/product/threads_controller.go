@@ -23,12 +23,12 @@ func NewThreadsController(db database.DB) *ThreadsController {
 	}
 }
 
-func (controller *ThreadsController) GetList(ctx controllers.Context) {
+func (c *ThreadsController) GetList(ctx controllers.Context) {
 
 }
 
-func (controller *ThreadsController) Post(ctx controllers.Context) {
-	token, res := controller.Token.Authorization(ctx.Query("accessToken"))
+func (c *ThreadsController) Post(ctx controllers.Context) {
+	token, res := c.Token.Authorization(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -37,7 +37,7 @@ func (controller *ThreadsController) Post(ctx controllers.Context) {
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 
-	thread, res := controller.Interactor.Post(domain.Threads{
+	thread, res := c.Interactor.Post(domain.Threads{
 		UserID:      token.UserID,
 		Title:       title,
 		Description: description,
