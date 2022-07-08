@@ -24,10 +24,18 @@ func NewRouting(c *Config, db *DB) *Routing {
 
 func (r *Routing) setRouting() {
 
+	commentsController := product.NewCommentsController(r.DB)
+	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
 	usersController := product.NewUsersController()
 	v1 := r.Gin.Group("/v1/product")
 	{
+		// Comment To Threads
+		v1.POST("/comments", func(ctx *gin.Context) { commentsController.Post(ctx) })
+
+		// Threads
+		v1.POST("/threads", func(ctx *gin.Context) { threadsController.Post(ctx) })
+
 		// Tokens
 		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })
 

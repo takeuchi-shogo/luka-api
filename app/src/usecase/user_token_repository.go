@@ -6,5 +6,6 @@ import (
 )
 
 type UserTokenRepository interface {
+	FindByToken(db *gorm.DB, token string) (foundToken domain.UserTokens, err error)
 	Create(db *gorm.DB, token domain.UserTokens) (newToken domain.UserTokens, err error)
 }
