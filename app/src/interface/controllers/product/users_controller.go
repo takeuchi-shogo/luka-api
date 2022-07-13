@@ -87,3 +87,46 @@ func (c *UsersController) Post(ctx controllers.Context) {
 
 	ctx.JSON(res.StatusCode, controllers.NewH("success", newUser))
 }
+
+func (c *UsersController) Patch(ctx controllers.Context) {
+	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
+	updateUser := domain.UserForPatch{}
+
+	updateUser.ID = token.UserID
+	updateUser.DisplayName = ctx.PostForm("displayName")
+	updateUser.ScreenName = ctx.PostForm("screenName")
+	updateUser.Password = ctx.PostForm("password")
+	updateUser.Email = ctx.PostForm("email")
+	updateUser.Age, _ = strconv.Atoi(ctx.PostForm("age"))
+	updateUser.Gender = ctx.PostForm("gender")
+	updateUser.Prefecture = ctx.PostForm("prefecture")
+
+	user, res := c.Interactor.Save(updateUser)
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+	ctx.JSON(res.StatusCode, controllers.NewH("success", user))
+}
+
+func (c *UsersController) Delete(ctx controllers.Context) {
+	_, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
+	screenName := ctx.Param("screenName")
+	if res := c.Interactor.Delete(domain.Users{
+		ScreenName: screenName,
+	}); res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))
+}

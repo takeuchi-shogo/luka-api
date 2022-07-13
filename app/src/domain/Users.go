@@ -20,6 +20,17 @@ type Users struct {
 	DeletedAt *int64 `json:"deletedAt"`
 }
 
+type UserForPatch struct {
+	ID          int
+	DisplayName string
+	ScreenName  string
+	Password    string
+	Email       string
+	Age         int
+	Gender      string
+	Prefecture  string
+}
+
 // パスワードのハッシュ化
 func (u *Users) GetPassword(password string) string {
 	var data [sha256.Size]byte

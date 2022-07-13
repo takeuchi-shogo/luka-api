@@ -21,6 +21,10 @@ func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Thr
 	return foundThread, nil
 }
 
+func (r *ThreadRepository) FindByUserID(db *gorm.DB, userID int) (foundThreads []domain.Threads, err error) {
+	return foundThreads, nil
+}
+
 func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread domain.Threads, err error) {
 
 	newThread = domain.Threads{}
@@ -36,11 +40,8 @@ func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread
 
 	db.NewRecord(&newThread)
 	err = db.Create(&newThread).Error
-	if err != nil {
-		return domain.Threads{}, err
-	}
 
-	return newThread, nil
+	return newThread, err
 }
 
 func (r *ThreadRepository) Save(db *gorm.DB, thread domain.Threads) (updateThread domain.Threads, err error) {

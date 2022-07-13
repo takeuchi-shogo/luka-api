@@ -19,6 +19,20 @@ func NewCommentsController(db database.DB) *CommentsController {
 	}
 }
 
+func (c *CommentsController) GetList(ctx controllers.Context) {
+
+	threadID, _ := strconv.Atoi(ctx.Query("threadId"))
+
+	comments, res := c.Interactor.GetList(domain.Comments{
+		ThreadID: threadID,
+	})
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+	ctx.JSON(res.StatusCode, controllers.NewH("success", comments))
+}
+
 func (c *CommentsController) Post(ctx controllers.Context) {
 
 	threadID, _ := strconv.Atoi(ctx.PostForm("threadId"))

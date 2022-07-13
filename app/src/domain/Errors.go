@@ -5,7 +5,7 @@ var (
 	ErrGetUserAccount    = "ユーザー情報の取得に失敗しました。"
 	ErrCreateUserAccount = "ユーザーアカウントの作成に失敗しました。"
 	ErrUpdateUserAccount = "ユーザー情報の編集に失敗しました。"
-	ErrDeleteUserAccount = "ユーザーアカウントの削除に失敗しました。"
+	ErrDeleteUserAccount = "ユーザー情報の削除に失敗しました。"
 
 	ErrUserNotFound = "ユーザーが見つかりません。"
 

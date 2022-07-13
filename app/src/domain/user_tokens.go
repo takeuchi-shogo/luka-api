@@ -17,6 +17,12 @@ type UserTokens struct {
 	CreatedAt int64 `json:"createdAt"`
 }
 
+// トークンの有効期限の取得
+func (u *UserTokens) SetExpireAt() {
+	u.TokenExpiredAt = time.Now().Unix() + int64(60*60*24*1)
+	u.RefreshTokenExpiredAt = time.Now().Unix() + int64(60*60*24*30)
+}
+
 func (u *UserTokens) GetToken() string {
 
 	source := rand.NewSource(time.Now().UnixNano())
