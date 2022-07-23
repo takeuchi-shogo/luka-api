@@ -21,7 +21,10 @@ func NewUsersController(db database.DB) *UsersController {
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.UserInteractor{},
+		Interactor: product.UserInteractor{
+			DB:   &database.DBRepository{DB: db},
+			User: &database.UserRepository{},
+		},
 	}
 }
 
