@@ -1,0 +1,29 @@
+
+version: '3'
+
+services:
+  luka:
+    build:
+      context: .
+    volumes:
+      - ./app:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.bashrc:/root/.bashrc
+    container_name: luka_api
+    depons_on:
+      - mysql
+      - phpmyadmin
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./sql:/sql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sns_sample
+      MYSQL_USER: sns_test
+      MYSQL_PASSWORD: password
+      TZ: 'Asia/Tokyo'
+  
