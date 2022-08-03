@@ -20,10 +20,13 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
       - ./sql:/sql
+    #container_name: sns_mysql
+    #ports:
+    #    - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: sns_sample
-      MYSQL_USER: sns_test
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
       TZ: 'Asia/Tokyo'
   

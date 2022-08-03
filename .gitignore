@@ -4,3 +4,5 @@ mysql
 
 config.go
 main
+
+.env
