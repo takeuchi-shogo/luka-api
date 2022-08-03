@@ -14,6 +14,6 @@ COPY --from=golang /usr/local/go /usr/local/go
 COPY ./app /var/www/html/
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-COPY ./bashrc /root/.bashrc
+COPY ./.bashrc /root/.bashrc
 
 CMD [ "bin/dev" ]
