@@ -24,12 +24,17 @@ func NewRouting(c *Config, db *DB) *Routing {
 
 func (r *Routing) setRouting() {
 
+	r.Gin.GET("/hello", func(c *gin.Context) {
+		c.JSON(200, "message")
+	})
+
 	commentsController := product.NewCommentsController(r.DB)
 	followersController := product.NewFollowersController(r.DB)
 	followingsController := product.NewFollowingsController(r.DB)
 	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
 	usersController := product.NewUsersController(r.DB)
+
 	v1 := r.Gin.Group("/v1/product")
 	{
 		// Comment To Threads
@@ -57,7 +62,7 @@ func (r *Routing) setRouting() {
 		v1.POST("/users", func(ctx *gin.Context) { usersController.Post(ctx) })
 
 		v1.GET("/users/:id", func(ctx *gin.Context) { usersController.Get(ctx) })
-		v1.PATCH("users/:id", func (ctx *gin.Context) { usersController.Patch(ctx) })
+		v1.PATCH("users/:id", func(ctx *gin.Context) { usersController.Patch(ctx) })
 
 		// Test用
 		v1.GET("/test", func(ctx *gin.Context) { ctx.JSON(200, "testtest") })
