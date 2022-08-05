@@ -25,6 +25,7 @@ func NewDB(c *Config) *DB {
 }
 
 // DBに接続
+// docker-composeしたときDBよりもアプリが早く立ち上がってしまうので10秒間待機する
 func (db *DB) connect(host string, username string, password string, dbName string) *gorm.DB {
 	count := 0
 	// https://github.com/go-sql-driver/mysql#examples
