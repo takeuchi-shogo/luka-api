@@ -1,6 +1,7 @@
 package product
 
 import (
+	"github.com/jinzhu/gorm"
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/usecase"
 )
@@ -12,31 +13,42 @@ type ThreadInteractor struct {
 	User    usecase.UserRepository
 }
 
-func (i *ThreadInteractor) Get(threadID int) (thread domain.Threads, resultStatus *usecase.ResultStatus) {
+func (i *ThreadInteractor) Get(threadID int) (thread domain.ThreadsForGet, resultStatus *usecase.ResultStatus) {
 
 	db := i.DB.Connect()
 
-	thread, err := i.Thread.FindByID(db, threadID)
+	res, err := i.Thread.FindByID(db, threadID)
 	if err != nil {
-		return domain.Threads{}, usecase.NewResultStatus(400, domain.ErrThreadNotFound)
+		return domain.ThreadsForGet{}, usecase.NewResultStatus(400, domain.ErrThreadNotFound)
 	}
 
-	user, err := i.User.FindByID(db, thread.UserID)
-	if err != nil {
-		return domain.Threads{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+	buildThread, errorMessage := i.build(db, res)
+	if errorMessage != "" {
+		return domain.ThreadsForGet{}, usecase.NewResultStatus(400, errorMessage)
 	}
 
-	comments, err := i.Comment.FindByThreadID(db, thread.ID)
+	return buildThread, usecase.NewResultStatus(200, "")
+}
+
+func (i *ThreadInteractor) GetList() (buildThreads []domain.ThreadsForGet, resultStatus *usecase.ResultStatus) {
+
+	db := i.DB.Connect()
+
+	threads, err := i.Thread.Find(db)
+
 	if err != nil {
-		return domain.Threads{}, usecase.NewResultStatus(400, domain.ErrCommentNotFound)
+		return []domain.ThreadsForGet{}, usecase.NewResultStatus(400, domain.ErrThreadNotFound)
 	}
 
-	buildThread := thread.BuildForGet()
+	for _, thread := range threads {
+		buildThread, err := i.build(db, thread)
+		if err != "" {
+			continue
+		}
+		buildThreads = append(buildThreads, buildThread)
+	}
 
-	buildThread.User = user
-	buildThread.Comments = comments
-
-	return thread, usecase.NewResultStatus(200, "")
+	return buildThreads, usecase.NewResultStatus(200, "")
 }
 
 func (i *ThreadInteractor) Post(thread domain.Threads) (newThead domain.Threads, resultStatus *usecase.ResultStatus) {
@@ -99,4 +111,27 @@ func (i *ThreadInteractor) Delete(thread domain.Threads) (resultStatus *usecase.
 		return usecase.NewResultStatus(400, domain.ErrDeleteThread)
 	}
 	return usecase.NewResultStatus(200, "")
+}
+
+func (i *ThreadInteractor) build(db *gorm.DB, thread domain.Threads) (buildThread domain.ThreadsForGet, errorMessage string) {
+
+	user, err := i.User.FindByID(db, thread.UserID)
+	if err != nil {
+		return domain.ThreadsForGet{}, domain.ErrGetUserAccount
+	}
+
+	comments, err := i.Comment.FindByThreadID(db, thread.ID)
+	if err != nil {
+		return domain.ThreadsForGet{}, domain.ErrCommentNotFound
+	}
+
+	buildThread = thread.BuildForGet()
+
+	buildThread.User = user
+	buildThread.Comments = comments
+
+	buildThread.CommentCnt = len(comments)
+	buildThread.FavoriteCnt = 0 //未実装
+
+	return buildThread, ""
 }

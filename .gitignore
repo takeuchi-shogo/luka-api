@@ -1,4 +1,8 @@
 .DS_Store
 
+mysql
+
 config.go
 main
+
+.env

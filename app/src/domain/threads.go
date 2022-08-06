@@ -20,6 +20,9 @@ type ThreadsForGet struct {
 
 	User     Users      `json:"user"`
 	Comments []Comments `json:"comments"`
+
+	CommentCnt  int `json:"commentCnt"`
+	FavoriteCnt int `json:"favoriteCnt"`
 }
 
 type ThreadsForPatch struct {
