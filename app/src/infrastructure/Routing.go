@@ -24,13 +24,10 @@ func NewRouting(c *Config, db *DB) *Routing {
 
 func (r *Routing) setRouting() {
 
-	r.Gin.GET("/hello", func(c *gin.Context) {
-		c.JSON(200, "message")
-	})
-
 	commentsController := product.NewCommentsController(r.DB)
 	followersController := product.NewFollowersController(r.DB)
 	followingsController := product.NewFollowingsController(r.DB)
+	meController := product.NewMeController(r.DB)
 	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
 	usersController := product.NewUsersController(r.DB)
@@ -47,6 +44,12 @@ func (r *Routing) setRouting() {
 		// Followings
 		v1.GET("/followings", func(ctx *gin.Context) { followingsController.GetList(ctx) })
 
+		// Me
+		v1.GET("/me", func(ctx *gin.Context) { meController.Get(ctx) })
+		v1.POST("/me", func(ctx *gin.Context) { meController.Post(ctx) })
+
+		v1.PATCH("/me/:id", func(ctx *gin.Context) { meController.Patch(ctx) })
+
 		// Threads
 		v1.GET("/threads", func(ctx *gin.Context) { threadsController.GetList(ctx) })
 		v1.POST("/threads", func(ctx *gin.Context) { threadsController.Post(ctx) })
@@ -59,10 +62,8 @@ func (r *Routing) setRouting() {
 
 		// Users
 		v1.GET("/users", func(ctx *gin.Context) { usersController.GetList(ctx) })
-		v1.POST("/users", func(ctx *gin.Context) { usersController.Post(ctx) })
 
 		v1.GET("/users/:id", func(ctx *gin.Context) { usersController.Get(ctx) })
-		v1.PATCH("users/:id", func(ctx *gin.Context) { usersController.Patch(ctx) })
 
 		// Test用
 		v1.GET("/test", func(ctx *gin.Context) { ctx.JSON(200, "testtest") })

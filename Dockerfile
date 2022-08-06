@@ -1,7 +1,8 @@
 
 # Golang
 FROM golang:1 as golang
-RUN go get -u github.com/cosmtrek/air
+
+RUN go install github.com/cosmtrek/air@latest
 
 # Nginx
 FROM nginx:1

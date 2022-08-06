@@ -9,6 +9,15 @@ import (
 
 type ThreadRepository struct{}
 
+func (r *ThreadRepository) Find(db *gorm.DB) (threads []domain.Threads, err error) {
+	threads = []domain.Threads{}
+	db.Find(threads)
+	if len(threads) <= 0 {
+		return []domain.Threads{}, err
+	}
+	return threads, nil
+}
+
 func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Threads, err error) {
 
 	foundThread = domain.Threads{}
