@@ -17,7 +17,13 @@ services:
     container_name: luka_api
     depends_on:
       - mysql
-      #- phpmyadmin
+      - phpmyadmin
+    networks:
+      - luka-network
+    environment:
+      - VIRTUAL_HOST=api.luka.lv
+    security_opt: 
+      - apparmor:unconfied
     cap_add:
       - SYS_PTRACE
 
@@ -28,12 +34,35 @@ services:
       - ./mysql:/var/lib/mysql
       - ./sql:/sql
     #container_name: sns_mysql
-    ports:
-       - 3306:3306
+    # ports:
+    #    - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
       TZ: 'Asia/Tokyo'
+    cap_add:
+      - SYS_NICE #追加
+    networks:
+      - luka-network
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: always
+    container_name: luka_phpmyadmin
+        # ports:
+        #     - 8181:80
+    environment:
+        # - PMA_ARBITRARY=1
+        - PMA_HOST=mysql
+        - PMA_USER=${DB_USER}
+        - PMA_PASSWORD=${DB_PASS}
+        - VIRTUAL_HOST=phpmyadmin.luka.lv
+    networks:
+        - luka-network
+
+networks:
+    luka-network:
+        name: luka_network
   

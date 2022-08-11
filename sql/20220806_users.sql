@@ -6,12 +6,12 @@ CREATE TABLE `users` (
     `display_name` varchar(50) NOT NULL,
     `password` varchar(255) NOT NULL,
     `email` varchar(200) NOT NULL,
-    `age` int NULL, --変更の可能性有り
+    `age` int NULL,
     `gender` varchar(30) NOT NULL,
     `prefecture` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
     `created_at` int UNSIGNED NOT NULL,
     `updated_at` int UNSIGNED NOT NULL,
-    `deleted_at` int DEFAULT NULL,
+    `deleted_at` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

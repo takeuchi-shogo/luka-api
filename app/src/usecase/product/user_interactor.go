@@ -14,7 +14,7 @@ func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultS
 
 	db := i.DB.Connect()
 
-	user, err := i.User.FindByScreenName(db, user.ScreenName)
+	user, err := i.User.FindByID(db, user.ID)
 	if err != nil {
 		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrGetUserAccount)
 	}

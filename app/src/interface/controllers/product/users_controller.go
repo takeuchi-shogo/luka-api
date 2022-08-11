@@ -6,6 +6,7 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
 	"github.com/takeuchi-shogo/luka-api/src/interface/database"
+	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
@@ -14,15 +15,15 @@ type UsersController struct {
 	Interactor product.UserInteractor
 }
 
-func NewUsersController(db database.DB) *UsersController {
+func NewUsersController(db gateways.DB) *UsersController {
 	return &UsersController{
 		Token: product.UserTokenInteractor{
-			DB:        &database.DBRepository{DB: db},
+			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
 		Interactor: product.UserInteractor{
-			DB:   &database.DBRepository{DB: db},
+			DB:   &gateways.DBRepository{DB: db},
 			User: &database.UserRepository{},
 		},
 	}

@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers/product"
 )
@@ -18,8 +19,15 @@ func NewRouting(c *Config, db *DB) *Routing {
 		Port: c.Routing.Port,
 	}
 
+	r.cors(c)
 	r.setRouting()
 	return r
+}
+
+func (r *Routing) cors(c *Config) {
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = c.CORS.AllowOrigins
+	r.Gin.Use(cors.New(corsConfig))
 }
 
 func (r *Routing) setRouting() {
@@ -59,6 +67,7 @@ func (r *Routing) setRouting() {
 
 		// Tokens
 		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })
+		v1.POST("/tokens/refresh", func(ctx *gin.Context) { tokensController.Refresh(ctx) })
 
 		// Users
 		v1.GET("/users", func(ctx *gin.Context) { usersController.GetList(ctx) })
