@@ -3,6 +3,7 @@ module github.com/takeuchi-shogo/luka-api
 go 1.17
 
 require (
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/jinzhu/gorm v1.9.16
 )
@@ -28,5 +29,4 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
 )

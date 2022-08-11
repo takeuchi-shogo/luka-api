@@ -12,7 +12,11 @@ func NewResultStatus(code int, errorMessage string) *ResultStatus {
 	resultStatus := new(ResultStatus)
 
 	resultStatus.StatusCode = code
-	resultStatus.ErrorMessage = errors.New(errorMessage)
+	if errorMessage != "" {
+		resultStatus.ErrorMessage = errors.New(errorMessage)
+	} else {
+		resultStatus.ErrorMessage = nil
+	}
 
 	return resultStatus
 }

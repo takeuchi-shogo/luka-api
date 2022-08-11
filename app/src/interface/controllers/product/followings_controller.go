@@ -6,6 +6,7 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
 	"github.com/takeuchi-shogo/luka-api/src/interface/database"
+	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
@@ -14,10 +15,10 @@ type FollowingsController struct {
 	Interactor product.FollowingInteractor
 }
 
-func NewFollowingsController(db database.DB) *FollowingsController {
+func NewFollowingsController(db gateways.DB) *FollowingsController {
 	return &FollowingsController{
 		Token: product.UserTokenInteractor{
-			DB:        &database.DBRepository{DB: db},
+			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},

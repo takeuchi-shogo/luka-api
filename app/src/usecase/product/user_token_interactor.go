@@ -23,7 +23,7 @@ func (i *UserTokenInteractor) Authorization(accessToken string) (token domain.Us
 	}
 
 	if token.TokenExpiredAt < time.Now().Unix() {
-		if token.RefreshTokenExpiredAt < time.Now().Unix() {
+		if time.Now().Unix() < token.RefreshTokenExpiredAt {
 			return domain.UserTokens{}, usecase.NewResultStatus(406, domain.ErrRefreshTokenExpire)
 		}
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrTokenExpire)
@@ -41,7 +41,7 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrSignIn)
 	}
 
-	if user.Password != foundUser.Password {
+	if foundUser.GetPassword(user.Password) != foundUser.Password {
 		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrSignIn)
 	}
 
@@ -54,4 +54,30 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 	}
 
 	return token, usecase.NewResultStatus(200, "")
+}
+
+func (i *UserTokenInteractor) Refresh(userToken domain.UserTokens) (newUserToken domain.UserTokens, resultStatus *usecase.ResultStatus) {
+
+	db := i.DB.Connect()
+
+	foundUserToken, err := i.UserToken.FindByToken(db, userToken.Token)
+	if err != nil {
+		return domain.UserTokens{}, usecase.NewResultStatus(400, "")
+	}
+	if foundUserToken.RefreshToken != userToken.RefreshToken {
+		return domain.UserTokens{}, usecase.NewResultStatus(400, "")
+	}
+	if foundUserToken.RefreshTokenExpiredAt < time.Now().Unix() {
+		return domain.UserTokens{}, usecase.NewResultStatus(400, "")
+	}
+
+	newUserToken = domain.UserTokens{}
+	newUserToken.UserID = foundUserToken.UserID
+
+	res, err := i.UserToken.Create(db, newUserToken)
+	if err != nil {
+		return domain.UserTokens{}, usecase.NewResultStatus(400, "")
+	}
+
+	return res, usecase.NewResultStatus(200, "")
 }

@@ -2,7 +2,7 @@
 CREATE TABLE `threads` (
     `id` int UNSIGNED NOT NULL,
     `user_id` int UNSIGNED NOT NULL,
-    `title` varchar(30) NOT NULL,
+    `title` varchar(50) NOT NULL,
     `description` varchar(255) NOT NULL,
     `created_at` int UNSIGNED NOT NULL,
     `updated_at` int UNSIGNED NOT NULL,

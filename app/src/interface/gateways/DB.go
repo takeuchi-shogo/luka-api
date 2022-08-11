@@ -1,4 +1,4 @@
-package database
+package gateways
 
 import "github.com/jinzhu/gorm"
 

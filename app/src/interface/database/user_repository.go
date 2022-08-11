@@ -12,7 +12,7 @@ type UserRepository struct{}
 
 func (r *UserRepository) FindByID(db *gorm.DB, id int) (user domain.Users, err error) {
 	user = domain.Users{}
-	db.First(id, &user)
+	db.First(&user, id)
 	if user.ID <= 0 {
 		return domain.Users{}, errors.New("user is not found")
 	}
@@ -21,7 +21,7 @@ func (r *UserRepository) FindByID(db *gorm.DB, id int) (user domain.Users, err e
 
 func (r *UserRepository) FindByScreenName(db *gorm.DB, screenName string) (user domain.Users, err error) {
 	user = domain.Users{}
-	db.Where("screen_name = ?", screenName).First(&screenName)
+	db.Where("screen_name = ?", screenName).First(&user)
 	if user.ID <= 0 {
 		return domain.Users{}, errors.New("user is not found")
 	}

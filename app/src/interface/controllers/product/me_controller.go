@@ -6,6 +6,7 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
 	"github.com/takeuchi-shogo/luka-api/src/interface/database"
+	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
@@ -14,15 +15,15 @@ type MeController struct {
 	Interactor product.UserInteractor
 }
 
-func NewMeController(db database.DB) *MeController {
+func NewMeController(db gateways.DB) *MeController {
 	return &MeController{
 		Token: product.UserTokenInteractor{
-			DB:        &database.DBRepository{DB: db},
+			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
 		Interactor: product.UserInteractor{
-			DB:   &database.DBRepository{DB: db},
+			DB:   &gateways.DBRepository{DB: db},
 			User: &database.UserRepository{},
 		},
 	}
@@ -44,7 +45,7 @@ func (c *MeController) Get(ctx controllers.Context) {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
-	ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), me))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", me))
 }
 
 func (c *MeController) Post(ctx controllers.Context) {
