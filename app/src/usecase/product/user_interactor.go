@@ -18,7 +18,7 @@ func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultS
 	if err != nil {
 		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrGetUserAccount)
 	}
-	return foundUser, usecase.NewResultStatus(200, "")
+	return user, usecase.NewResultStatus(200, "")
 }
 
 func (i *UserInteractor) GetList(userID int) (users []domain.Users, resultStatus *usecase.ResultStatus) {
