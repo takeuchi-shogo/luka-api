@@ -11,7 +11,7 @@ type ThreadRepository struct{}
 
 func (r *ThreadRepository) Find(db *gorm.DB) (threads []domain.Threads, err error) {
 	threads = []domain.Threads{}
-	db.Find(threads)
+	db.Find(&threads)
 	if len(threads) <= 0 {
 		return []domain.Threads{}, err
 	}

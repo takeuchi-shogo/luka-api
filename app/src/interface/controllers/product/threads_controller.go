@@ -52,10 +52,24 @@ func (c *ThreadsController) Get(ctx controllers.Context) {
 
 func (c *ThreadsController) GetList(ctx controllers.Context) {
 
+	_, res := c.Token.Authorization(ctx.Query("accessToken"))
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
+	threads, res := c.Interactor.GetList()
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
+	ctx.JSON(res.StatusCode, controllers.NewH("success", threads))
+
 }
 
 func (c *ThreadsController) Post(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.Query("accessToken"))
+	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -77,7 +91,7 @@ func (c *ThreadsController) Post(ctx controllers.Context) {
 }
 
 func (c *ThreadsController) Patch(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.Query("accessToken"))
+	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return

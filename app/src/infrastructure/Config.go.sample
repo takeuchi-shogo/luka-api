@@ -21,7 +21,7 @@ func NewConfig() *Config {
 
 	c := new(Config)
 
-	c.CORS.AllowOrigins = []string{""}
+	c.CORS.AllowOrigins = []string{"https://luka831.com"}
 
 	c.DB.Production.Host = "localhost"
 	c.DB.Production.UserName = "user name"

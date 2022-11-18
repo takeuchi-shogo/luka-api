@@ -62,7 +62,7 @@ func (r *Routing) setRouting() {
 		v1.GET("/threads", func(ctx *gin.Context) { threadsController.GetList(ctx) })
 		v1.POST("/threads", func(ctx *gin.Context) { threadsController.Post(ctx) })
 
-		v1.GET("threads/:id", func(ctx *gin.Context) { threadsController.Get(ctx) })
+		v1.GET("/threads/:id", func(ctx *gin.Context) { threadsController.Get(ctx) })
 		v1.PATCH("/threads/:id", func(ctx *gin.Context) { threadsController.Patch(ctx) })
 
 		// Tokens

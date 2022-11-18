@@ -13,6 +13,10 @@ type ThreadInteractor struct {
 	User    usecase.UserRepository
 }
 
+type ThreadList struct {
+	Lists []domain.ThreadsForGet `json:"lists"`
+}
+
 func (i *ThreadInteractor) Get(threadID int) (thread domain.ThreadsForGet, resultStatus *usecase.ResultStatus) {
 
 	db := i.DB.Connect()
@@ -30,15 +34,17 @@ func (i *ThreadInteractor) Get(threadID int) (thread domain.ThreadsForGet, resul
 	return buildThread, usecase.NewResultStatus(200, "")
 }
 
-func (i *ThreadInteractor) GetList() (buildThreads []domain.ThreadsForGet, resultStatus *usecase.ResultStatus) {
+func (i *ThreadInteractor) GetList() (threadList ThreadList, resultStatus *usecase.ResultStatus) {
 
 	db := i.DB.Connect()
 
 	threads, err := i.Thread.Find(db)
 
 	if err != nil {
-		return []domain.ThreadsForGet{}, usecase.NewResultStatus(400, domain.ErrThreadNotFound)
+		return ThreadList{Lists: []domain.ThreadsForGet{}}, usecase.NewResultStatus(400, domain.ErrThreadNotFound)
 	}
+
+	buildThreads := []domain.ThreadsForGet{}
 
 	for _, thread := range threads {
 		buildThread, err := i.build(db, thread)
@@ -48,7 +54,7 @@ func (i *ThreadInteractor) GetList() (buildThreads []domain.ThreadsForGet, resul
 		buildThreads = append(buildThreads, buildThread)
 	}
 
-	return buildThreads, usecase.NewResultStatus(200, "")
+	return ThreadList{Lists: buildThreads}, usecase.NewResultStatus(200, "")
 }
 
 func (i *ThreadInteractor) Post(thread domain.Threads) (newThead domain.Threads, resultStatus *usecase.ResultStatus) {
