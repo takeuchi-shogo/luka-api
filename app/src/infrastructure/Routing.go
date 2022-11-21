@@ -56,7 +56,7 @@ func (r *Routing) setRouting() {
 		v1.GET("/me", func(ctx *gin.Context) { meController.Get(ctx) })
 		v1.POST("/me", func(ctx *gin.Context) { meController.Post(ctx) })
 
-		v1.PATCH("/me/:id", func(ctx *gin.Context) { meController.Patch(ctx) })
+		v1.PATCH("/me", func(ctx *gin.Context) { meController.Patch(ctx) })
 
 		// Threads
 		v1.GET("/threads", func(ctx *gin.Context) { threadsController.GetList(ctx) })

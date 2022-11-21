@@ -7,10 +7,12 @@ import (
 )
 
 type ThreadInteractor struct {
-	Comment usecase.CommentRepository
-	DB      usecase.DBRepository
-	Thread  usecase.ThreadRepository
-	User    usecase.UserRepository
+	Comment         usecase.CommentRepository
+	DB              usecase.DBRepository
+	FavoriteComment usecase.FavoriteCommentRepository
+	FavoriteThread  usecase.FavoriteThreadRepository
+	Thread          usecase.ThreadRepository
+	User            usecase.UserRepository
 }
 
 type ThreadList struct {
@@ -126,10 +128,9 @@ func (i *ThreadInteractor) build(db *gorm.DB, thread domain.Threads) (buildThrea
 		return domain.ThreadsForGet{}, domain.ErrGetUserAccount
 	}
 
-	comments, err := i.Comment.FindByThreadID(db, thread.ID)
-	if err != nil {
-		return domain.ThreadsForGet{}, domain.ErrCommentNotFound
-	}
+	comments, _ := i.Comment.FindByThreadID(db, thread.ID)
+
+	favoriteThreads, _ := i.FavoriteThread.FindByThreadID(db, thread.ID)
 
 	buildThread = thread.BuildForGet()
 
@@ -137,7 +138,7 @@ func (i *ThreadInteractor) build(db *gorm.DB, thread domain.Threads) (buildThrea
 	buildThread.Comments = comments
 
 	buildThread.CommentCnt = len(comments)
-	buildThread.FavoriteCnt = 0 //未実装
+	buildThread.FavoriteCnt = len(favoriteThreads)
 
 	return buildThread, ""
 }

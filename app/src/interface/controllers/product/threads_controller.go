@@ -23,10 +23,12 @@ func NewThreadsController(db gateways.DB) *ThreadsController {
 			UserToken: &database.UserTokenRepository{},
 		},
 		Interactor: product.ThreadInteractor{
-			Comment: &database.CommentRepository{},
-			DB:      &gateways.DBRepository{DB: db},
-			Thread:  &database.ThreadRepository{},
-			User:    &database.UserRepository{},
+			Comment:         &database.CommentRepository{},
+			DB:              &gateways.DBRepository{DB: db},
+			FavoriteComment: &database.FavoriteCommentRepository{},
+			FavoriteThread:  &database.FavoriteThreadRepository{},
+			Thread:          &database.ThreadRepository{},
+			User:            &database.UserRepository{},
 		},
 	}
 }
