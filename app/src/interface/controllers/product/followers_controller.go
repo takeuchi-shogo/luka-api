@@ -44,7 +44,7 @@ func (c *FollowersController) GetList(ctx controllers.Context) {
 
 func (c *FollowersController) Post(ctx controllers.Context) {
 
-	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return

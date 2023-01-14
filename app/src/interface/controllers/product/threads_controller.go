@@ -34,7 +34,7 @@ func NewThreadsController(db gateways.DB) *ThreadsController {
 }
 
 func (c *ThreadsController) Get(ctx controllers.Context) {
-	_, res := c.Token.Authorization(ctx.Query("accessToken"))
+	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -54,7 +54,7 @@ func (c *ThreadsController) Get(ctx controllers.Context) {
 
 func (c *ThreadsController) GetList(ctx controllers.Context) {
 
-	_, res := c.Token.Authorization(ctx.Query("accessToken"))
+	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -71,7 +71,7 @@ func (c *ThreadsController) GetList(ctx controllers.Context) {
 }
 
 func (c *ThreadsController) Post(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -93,7 +93,7 @@ func (c *ThreadsController) Post(ctx controllers.Context) {
 }
 
 func (c *ThreadsController) Patch(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -117,13 +117,13 @@ func (c *ThreadsController) Patch(ctx controllers.Context) {
 }
 
 func (c *ThreadsController) Delete(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.Query("accessToken"))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	threadID, _ := strconv.Atoi(ctx.PostForm("threadId"))
+	threadID, _ := strconv.Atoi(ctx.Param("id"))
 
 	if res = c.Interactor.Delete(domain.Threads{
 		ID:     threadID,

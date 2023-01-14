@@ -30,7 +30,7 @@ func NewUsersController(db gateways.DB) *UsersController {
 }
 
 func (c *UsersController) Get(ctx controllers.Context) {
-	_, res := c.Token.Authorization(ctx.Query("accessToken"))
+	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
@@ -50,7 +50,7 @@ func (c *UsersController) Get(ctx controllers.Context) {
 }
 
 func (c *UsersController) GetList(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.Query("accessToken"))
+	token, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return

@@ -28,7 +28,7 @@ func NewFollowingsController(db gateways.DB) *FollowingsController {
 
 func (c *FollowingsController) GetList(ctx controllers.Context) {
 
-	_, res := c.Token.Authorization(ctx.Query("accessToken"))
+	_, res := c.Token.Verification(ctx.Query("accessToken"))
 
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
@@ -48,7 +48,7 @@ func (c *FollowingsController) GetList(ctx controllers.Context) {
 }
 
 func (c *FollowingsController) Post(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))

@@ -32,7 +32,10 @@ var (
 	// Follower
 	ErrCreateFollower = "フォロワーの作成に失敗しました"
 
-	ErrFollowerNotFound = "フォローしているユーザーはいません"
+	ErrFollowerNotFound = "フォローされているユーザーはいません"
+
+	// Following
+	ErrFollowingNotFound = "フォローしているユーザーはいません"
 
 	// Favorites
 	ErrFavoriteCommentNotFound = "まだこのコメントにいいねはありません"

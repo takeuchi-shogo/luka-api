@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -21,10 +23,11 @@ func (r *ThreadRepository) Find(db *gorm.DB) (threads []domain.Threads, err erro
 func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Threads, err error) {
 
 	foundThread = domain.Threads{}
+	fmt.Println(id)
 
-	db.Where("id = ?", id).First(&foundThread)
-	if foundThread.ID <= 0 {
-		return domain.Threads{}, err
+	db.First(&foundThread, id)
+	if foundThread.ID < 0 {
+		return domain.Threads{}, errors.New("test error")
 	}
 
 	return foundThread, nil
@@ -72,6 +75,10 @@ func (r *ThreadRepository) Save(db *gorm.DB, thread domain.Threads) (updateThrea
 	return updateThread, nil
 }
 
+// 論理削除
 func (r *ThreadRepository) Delete(db *gorm.DB, thread domain.Threads) error {
-	return db.Delete(&thread).Error
+	fmt.Println(thread)
+	currentTime := time.Now().Unix()
+	thread.DeletedAt = &currentTime
+	return db.Save(&thread).Error
 }

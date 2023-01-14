@@ -64,6 +64,7 @@ func (r *Routing) setRouting() {
 
 		v1.GET("/threads/:id", func(ctx *gin.Context) { threadsController.Get(ctx) })
 		v1.PATCH("/threads/:id", func(ctx *gin.Context) { threadsController.Patch(ctx) })
+		v1.DELETE("/threads/:id", func(ctx *gin.Context) { threadsController.Delete(ctx) })
 
 		// Tokens
 		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })

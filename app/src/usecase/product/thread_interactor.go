@@ -1,6 +1,8 @@
 package product
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/usecase"
@@ -115,7 +117,13 @@ func (i *ThreadInteractor) Delete(thread domain.Threads) (resultStatus *usecase.
 
 	db := i.DB.Connect()
 
-	if _, err := i.Thread.FindByID(db, thread.ID); err != nil {
+	thread, err := i.Thread.FindByID(db, thread.ID)
+	if err != nil {
+		return usecase.NewResultStatus(400, domain.ErrDeleteThread)
+	}
+	fmt.Println("thread", thread)
+
+	if err := i.Thread.Delete(db, thread); err != nil {
 		return usecase.NewResultStatus(400, domain.ErrDeleteThread)
 	}
 	return usecase.NewResultStatus(200, "")

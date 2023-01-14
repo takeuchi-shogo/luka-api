@@ -13,7 +13,7 @@ type UserTokenInteractor struct {
 	UserToken usecase.UserTokenRepository
 }
 
-func (i *UserTokenInteractor) Authorization(accessToken string) (token domain.UserTokens, resultStatus *usecase.ResultStatus) {
+func (i *UserTokenInteractor) Verification(accessToken string) (token domain.UserTokens, resultStatus *usecase.ResultStatus) {
 
 	db := i.DB.Connect()
 
