@@ -10,61 +10,55 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
-type FollowingsController struct {
+type FollowsController struct {
 	Token      product.UserTokenInteractor
-	Interactor product.FollowingInteractor
+	Interactor product.FollowInteractor
 }
 
-func NewFollowingsController(db gateways.DB) *FollowingsController {
-	return &FollowingsController{
+func NewFollowsController(db gateways.DB) *FollowsController {
+	return &FollowsController{
 		Token: product.UserTokenInteractor{
 			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.FollowingInteractor{},
+		Interactor: product.FollowInteractor{
+			DB:     &gateways.DBRepository{DB: db},
+			Follow: &database.FollowRepository{},
+		},
 	}
 }
 
-func (c *FollowingsController) GetList(ctx controllers.Context) {
-
-	_, res := c.Token.Verification(ctx.Query("accessToken"))
-
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
-		return
-	}
+func (c *FollowsController) GetList(ctx controllers.Context) {
 
 	userID, _ := strconv.Atoi(ctx.Query("userId"))
-
-	followings, res := c.Interactor.GetList(userID)
-
+	followers, res := c.Interactor.GetList(domain.Follows{
+		UserID: userID,
+	})
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
-
-	ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), followings))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", followers))
 }
 
-func (c *FollowingsController) Post(ctx controllers.Context) {
-	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
+func (c *FollowsController) Post(ctx controllers.Context) {
 
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	toUserID, _ := strconv.Atoi(ctx.PostForm("userId"))
+	toUserID, _ := strconv.Atoi(ctx.PostForm("toUserId"))
 
-	newFollowing, res := c.Interactor.Create(domain.Followings{
+	newFollower, res := c.Interactor.Create(domain.Follows{
 		UserID:   token.UserID,
 		ToUserID: toUserID,
 	})
-
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
 	}
-
-	ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), newFollowing))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", newFollower))
 }

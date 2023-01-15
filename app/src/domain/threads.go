@@ -1,5 +1,7 @@
 package domain
 
+import "errors"
+
 type Threads struct {
 	ID          int    `json:"id"`
 	UserID      int    `json:"userId"`
@@ -30,6 +32,31 @@ type ThreadsForPatch struct {
 	UserID      int
 	Title       string
 	Description string
+}
+
+func (t *Threads) Validate() error {
+	if err := t.validateTitle(); err != nil {
+		return err
+	}
+	if err := t.validateDescription(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *Threads) validateTitle() error {
+	if t.Title == "" {
+		return errors.New("title is required")
+	}
+	return nil
+}
+
+func (t *Threads) validateDescription() error {
+	if t.Description == "" {
+		return errors.New("description is required")
+	}
+	return nil
 }
 
 func (t *Threads) BuildForGet() ThreadsForGet {

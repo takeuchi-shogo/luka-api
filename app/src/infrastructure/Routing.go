@@ -33,8 +33,7 @@ func (r *Routing) cors(c *Config) {
 func (r *Routing) setRouting() {
 
 	commentsController := product.NewCommentsController(r.DB)
-	followersController := product.NewFollowersController(r.DB)
-	followingsController := product.NewFollowingsController(r.DB)
+	followsController := product.NewFollowsController(r.DB)
 	meController := product.NewMeController(r.DB)
 	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
@@ -47,10 +46,7 @@ func (r *Routing) setRouting() {
 		v1.POST("/comments", func(ctx *gin.Context) { commentsController.Post(ctx) })
 
 		// Followers
-		v1.GET("/followers", func(ctx *gin.Context) { followersController.GetList(ctx) })
-
-		// Followings
-		v1.GET("/followings", func(ctx *gin.Context) { followingsController.GetList(ctx) })
+		v1.GET("/follows", func(ctx *gin.Context) { followsController.GetList(ctx) })
 
 		// Me
 		v1.GET("/me", func(ctx *gin.Context) { meController.Get(ctx) })

@@ -1,4 +1,4 @@
-CREATE TABLE `followings` (
+CREATE TABLE `follows` (
     `id` int UNSIGNED NOT NULL,
     `user_id` int UNSIGNED NOT NULL,
     `to_user_id` int UNSIGNED NOT NULL,
@@ -8,9 +8,9 @@ CREATE TABLE `followings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-ALTER TABLE `followings`
+ALTER TABLE `follows`
     ADD PRIMARY KEY (`id`);
 
 
-ALTER TABLE `followings`
+ALTER TABLE `follows`
     MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;

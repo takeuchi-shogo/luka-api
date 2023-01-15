@@ -24,8 +24,10 @@ func NewMeController(db gateways.DB) *MeController {
 			UserToken: &database.UserTokenRepository{},
 		},
 		Interactor: product.MeInteractor{
-			DB:   &gateways.DBRepository{DB: db},
-			User: &database.UserRepository{},
+			DB:     &gateways.DBRepository{DB: db},
+			Follow: &database.FollowRepository{},
+			Thread: &database.ThreadRepository{},
+			User:   &database.UserRepository{},
 		},
 	}
 }
@@ -77,14 +79,12 @@ func (c *MeController) Post(ctx controllers.Context) {
 }
 
 func (c *MeController) Patch(ctx controllers.Context) {
-	fmt.Println("2")
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		fmt.Println(res)
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
-	fmt.Println("3")
 
 	updateUser := domain.UserForPatch{}
 

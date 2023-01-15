@@ -1,26 +1,37 @@
 package product
 
 import (
+	"fmt"
+
+	"github.com/jinzhu/gorm"
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/usecase"
 )
 
 type MeInteractor struct {
-	DB   usecase.DBRepository
-	User usecase.UserRepository
+	DB     usecase.DBRepository
+	Follow usecase.FollowRepository
+	Thread usecase.ThreadRepository
+	User   usecase.UserRepository
 }
 
-func (i *MeInteractor) Get(user domain.Users) (me domain.Users, resultStatus *usecase.ResultStatus) {
+func (i *MeInteractor) Get(user domain.Users) (me domain.UsersForGet, resultStatus *usecase.ResultStatus) {
 
 	db := i.DB.Connect()
 
 	foundMe, err := i.User.FindByID(db, user.ID)
 
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return domain.UsersForGet{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
 	}
 
-	return foundMe, usecase.NewResultStatus(200, "")
+	builtMe, err := i.build(db, foundMe)
+	if err != nil {
+		return domain.UsersForGet{}, usecase.NewResultStatus(400, err.Error())
+	}
+	fmt.Println(builtMe)
+
+	return builtMe, usecase.NewResultStatus(200, "")
 }
 
 func (i *MeInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
@@ -63,4 +74,20 @@ func (i MeInteractor) Save(user domain.UserForPatch) (updatedMe domain.Users, re
 	}
 
 	return updatedMe, usecase.NewResultStatus(200, "")
+}
+
+func (i *MeInteractor) build(db *gorm.DB, me domain.Users) (builtMe domain.UsersForGet, err error) {
+	threadCnt, _ := i.Thread.CountByUserID(db, me.ID)
+
+	followingCnt, _ := i.Follow.CountByUserID(db, me.ID)
+
+	followerCnt, _ := i.Follow.CountByToUserID(db, me.ID)
+
+	builtMe = me.BuildForGet()
+
+	builtMe.ThreadCnt = threadCnt
+	builtMe.FollowingsCnt = followingCnt
+	builtMe.FollowersCnt = followerCnt
+
+	return builtMe, nil
 }

@@ -23,7 +23,6 @@ func (r *ThreadRepository) Find(db *gorm.DB) (threads []domain.Threads, err erro
 func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Threads, err error) {
 
 	foundThread = domain.Threads{}
-	fmt.Println(id)
 
 	db.First(&foundThread, id)
 	if foundThread.ID < 0 {
@@ -35,6 +34,12 @@ func (r *ThreadRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Thr
 
 func (r *ThreadRepository) FindByUserID(db *gorm.DB, userID int) (foundThreads []domain.Threads, err error) {
 	return foundThreads, nil
+}
+
+func (r *ThreadRepository) CountByUserID(db *gorm.DB, userID int) (threadCnt int, err error) {
+	threadCnt = 0
+	db.Model(&domain.Threads{}).Where("user_id = ?", userID).Count(&threadCnt)
+	return threadCnt, nil
 }
 
 func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread domain.Threads, err error) {
@@ -67,6 +72,10 @@ func (r *ThreadRepository) Save(db *gorm.DB, thread domain.Threads) (updateThrea
 	updateThread.CreatedAt = thread.CreatedAt
 	updateThread.UpdatedAt = time.Now().Unix()
 	updateThread.DeletedAt = nil
+
+	if err := updateThread.Validate(); err != nil {
+		return domain.Threads{}, err
+	}
 
 	if err := db.Save(&updateThread).Error; err != nil {
 		return domain.Threads{}, err

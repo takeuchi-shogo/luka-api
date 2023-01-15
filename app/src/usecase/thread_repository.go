@@ -8,6 +8,7 @@ import (
 type ThreadRepository interface {
 	Find(db *gorm.DB) (threads []domain.Threads, err error) // Test
 	FindByID(db *gorm.DB, id int) (thread domain.Threads, err error)
+	CountByUserID(db *gorm.DB, userID int) (threadCnt int, err error)
 	Create(db *gorm.DB, thread domain.Threads) (newThead domain.Threads, err error)
 	Save(db *gorm.DB, thread domain.Threads) (updateThread domain.Threads, err error)
 	Delete(db *gorm.DB, thread domain.Threads) error

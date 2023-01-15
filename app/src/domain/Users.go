@@ -28,6 +28,10 @@ type UsersForGet struct {
 	Age         int    `json:"age"`
 	Gender      int    `json:"gender"`
 	Prefecture  int    `json:"prefecture"`
+
+	ThreadCnt     int `json:"threadCnt"`
+	FollowersCnt  int `json:"followersCnt"`
+	FollowingsCnt int `json:"followingsCnt"`
 }
 
 type UserForPatch struct {
