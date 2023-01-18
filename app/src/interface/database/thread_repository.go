@@ -55,6 +55,10 @@ func (r *ThreadRepository) Create(db *gorm.DB, thread domain.Threads) (newThread
 	newThread.UpdatedAt = currentTime
 	newThread.DeletedAt = nil
 
+	if err := newThread.Validate(); err != nil {
+		return domain.Threads{}, err
+	}
+
 	db.NewRecord(&newThread)
 	err = db.Create(&newThread).Error
 
