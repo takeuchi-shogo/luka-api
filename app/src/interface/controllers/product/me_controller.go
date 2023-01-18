@@ -26,7 +26,7 @@ func NewMeController(db gateways.DB) *MeController {
 		Interactor: product.MeInteractor{
 			DB:     &gateways.DBRepository{DB: db},
 			Follow: &database.FollowRepository{},
-			Thread: &database.ThreadRepository{},
+			Thread: &database.ArticleRepository{},
 			User:   &database.UserRepository{},
 		},
 	}

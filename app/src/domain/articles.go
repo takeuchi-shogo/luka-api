@@ -2,7 +2,7 @@ package domain
 
 import "errors"
 
-type Threads struct {
+type Articles struct {
 	ID          int    `json:"id"`
 	UserID      int    `json:"userId"`
 	Title       string `json:"title"`
@@ -13,7 +13,7 @@ type Threads struct {
 	DeletedAt *int64 `json:"deletedAt"`
 }
 
-type ThreadsForGet struct {
+type ArticlesForGet struct {
 	ID          int    `json:"id"`
 	UserID      int    `json:"userId"`
 	Title       string `json:"title"`
@@ -27,46 +27,46 @@ type ThreadsForGet struct {
 	FavoriteCnt int `json:"favoriteCnt"`
 }
 
-type ThreadsForPatch struct {
+type ArticlesForPatch struct {
 	ID          int
 	UserID      int
 	Title       string
 	Description string
 }
 
-func (t *Threads) Validate() error {
-	if err := t.validateTitle(); err != nil {
+func (a *Articles) Validate() error {
+	if err := a.validateTitle(); err != nil {
 		return err
 	}
-	if err := t.validateDescription(); err != nil {
+	if err := a.validateDescription(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (t *Threads) validateTitle() error {
-	if t.Title == "" {
+func (a *Articles) validateTitle() error {
+	if a.Title == "" {
 		return errors.New("title is required")
 	}
 	return nil
 }
 
-func (t *Threads) validateDescription() error {
-	if t.Description == "" {
+func (a *Articles) validateDescription() error {
+	if a.Description == "" {
 		return errors.New("description is required")
 	}
 	return nil
 }
 
-func (t *Threads) BuildForGet() ThreadsForGet {
-	thread := ThreadsForGet{}
+func (a *Articles) BuildForGet() ArticlesForGet {
+	article := ArticlesForGet{}
 
-	thread.ID = t.ID
-	thread.UserID = t.UserID
-	thread.Title = t.Title
-	thread.Description = t.Description
-	thread.CreatedAt = t.CreatedAt
+	article.ID = a.ID
+	article.UserID = a.UserID
+	article.Title = a.Title
+	article.Description = a.Description
+	article.CreatedAt = a.CreatedAt
 
-	return thread
+	return article
 }

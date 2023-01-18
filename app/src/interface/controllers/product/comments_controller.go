@@ -21,10 +21,10 @@ func NewCommentsController(db gateways.DB) *CommentsController {
 
 func (c *CommentsController) GetList(ctx controllers.Context) {
 
-	threadID, _ := strconv.Atoi(ctx.Query("threadId"))
+	articleID, _ := strconv.Atoi(ctx.Query("articleId"))
 
 	comments, res := c.Interactor.GetList(domain.Comments{
-		ThreadID: threadID,
+		ArticleID: articleID,
 	})
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
@@ -35,14 +35,14 @@ func (c *CommentsController) GetList(ctx controllers.Context) {
 
 func (c *CommentsController) Post(ctx controllers.Context) {
 
-	threadID, _ := strconv.Atoi(ctx.PostForm("threadId"))
+	articleID, _ := strconv.Atoi(ctx.PostForm("articleId"))
 	userID, _ := strconv.Atoi(ctx.PostForm("userId"))
 	content := ctx.PostForm("content")
 
 	newComment, res := c.Interactor.Create(domain.Comments{
-		ThreadID: threadID,
-		UserID:   userID,
-		Content:  content,
+		ArticleID: articleID,
+		UserID:    userID,
+		Content:   content,
 	})
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))

@@ -18,11 +18,11 @@ func (r *CommentRepository) FindByID(db *gorm.DB, id int) (comment domain.Commen
 	return comment, nil
 }
 
-func (r *CommentRepository) FindByThreadID(db *gorm.DB, threadID int) (foundComments []domain.Comments, err error) {
+func (r *CommentRepository) FindByArticleID(db *gorm.DB, articleID int) (foundComments []domain.Comments, err error) {
 
 	foundComments = []domain.Comments{}
 
-	db.Where("thread_id = ?", threadID).Find(&foundComments)
+	db.Where("article_id = ?", articleID).Find(&foundComments)
 	if len(foundComments) < 0 {
 		return []domain.Comments{}, err
 	}
@@ -33,7 +33,7 @@ func (r *CommentRepository) Create(db *gorm.DB, comment domain.Comments) (newCom
 
 	newComment = domain.Comments{}
 
-	newComment.ThreadID = comment.ThreadID
+	newComment.ArticleID = comment.ArticleID
 	newComment.UserID = comment.UserID
 	newComment.Content = comment.Content
 

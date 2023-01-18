@@ -6,6 +6,6 @@ import (
 )
 
 type CommentRepository interface {
-	FindByThreadID(db *gorm.DB, threadID int) (foundComments []domain.Comments, err error)
+	FindByArticleID(db *gorm.DB, articleID int) (foundComments []domain.Comments, err error)
 	Create(db *gorm.DB, comment domain.Comments) (newComment domain.Comments, err error)
 }

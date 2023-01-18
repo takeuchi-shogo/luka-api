@@ -14,7 +14,7 @@ func (i *CommentInteractor) GetList(comment domain.Comments) (comments []domain.
 
 	db := i.DB.Connect()
 
-	comments, err := i.Comment.FindByThreadID(db, comment.ThreadID)
+	comments, err := i.Comment.FindByArticleID(db, comment.ArticleID)
 	if err != nil {
 		return []domain.Comments{}, usecase.NewResultStatus(400, domain.ErrCommentNotFound)
 	}

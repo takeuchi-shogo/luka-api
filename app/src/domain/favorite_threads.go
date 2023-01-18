@@ -1,9 +1,9 @@
 package domain
 
-type FavoriteThreads struct {
-	ID       int `json:"id"`
-	UserID   int `json:"userId"`
-	ThreadID int `json:"threadId"`
+type FavoriteArticles struct {
+	ID        int `json:"id"`
+	UserID    int `json:"userId"`
+	ArticleID int `json:"articleId"`
 
 	CreatedAt int64 `json:"createdAt"`
 }

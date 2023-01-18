@@ -10,49 +10,49 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
-type ThreadsController struct {
+type ArticlesController struct {
 	Token      product.UserTokenInteractor
-	Interactor product.ThreadInteractor
+	Interactor product.ArticleInteractor
 }
 
-func NewThreadsController(db gateways.DB) *ThreadsController {
-	return &ThreadsController{
+func NewArticlesController(db gateways.DB) *ArticlesController {
+	return &ArticlesController{
 		Token: product.UserTokenInteractor{
 			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.ThreadInteractor{
+		Interactor: product.ArticleInteractor{
+			Article:         &database.ArticleRepository{},
 			Comment:         &database.CommentRepository{},
 			DB:              &gateways.DBRepository{DB: db},
 			FavoriteComment: &database.FavoriteCommentRepository{},
-			FavoriteThread:  &database.FavoriteThreadRepository{},
-			Thread:          &database.ThreadRepository{},
+			FavoriteArticle: &database.FavoriteArticleRepository{},
 			User:            &database.UserRepository{},
 		},
 	}
 }
 
-func (c *ThreadsController) Get(ctx controllers.Context) {
+func (c *ArticlesController) Get(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	threadID, _ := strconv.Atoi(ctx.Param("id"))
+	articleID, _ := strconv.Atoi(ctx.Param("id"))
 
-	thread, res := c.Interactor.Get(threadID)
+	article, res := c.Interactor.Get(articleID)
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	ctx.JSON(res.StatusCode, controllers.NewH("success", thread))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", article))
 
 }
 
-func (c *ThreadsController) GetList(ctx controllers.Context) {
+func (c *ArticlesController) GetList(ctx controllers.Context) {
 
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.ErrorMessage != nil {
@@ -60,17 +60,17 @@ func (c *ThreadsController) GetList(ctx controllers.Context) {
 		return
 	}
 
-	threads, res := c.Interactor.GetList()
+	articles, res := c.Interactor.GetList()
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	ctx.JSON(res.StatusCode, controllers.NewH("success", threads))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", articles))
 
 }
 
-func (c *ThreadsController) Post(ctx controllers.Context) {
+func (c *ArticlesController) Post(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
@@ -80,7 +80,7 @@ func (c *ThreadsController) Post(ctx controllers.Context) {
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 
-	thread, res := c.Interactor.Post(domain.Threads{
+	article, res := c.Interactor.Post(domain.Articles{
 		UserID:      token.UserID,
 		Title:       title,
 		Description: description,
@@ -89,22 +89,22 @@ func (c *ThreadsController) Post(ctx controllers.Context) {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
-	ctx.JSON(res.StatusCode, controllers.NewH("success", thread))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", article))
 }
 
-func (c *ThreadsController) Patch(ctx controllers.Context) {
+func (c *ArticlesController) Patch(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	threadID, _ := strconv.Atoi(ctx.PostForm("threadId"))
+	articleID, _ := strconv.Atoi(ctx.Param("articleId"))
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 
-	updateThread, res := c.Interactor.Save(domain.ThreadsForPatch{
-		ID:          threadID,
+	updateArticle, res := c.Interactor.Save(domain.ArticlesForPatch{
+		ID:          articleID,
 		UserID:      token.UserID,
 		Title:       title,
 		Description: description,
@@ -113,20 +113,20 @@ func (c *ThreadsController) Patch(ctx controllers.Context) {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
-	ctx.JSON(res.StatusCode, controllers.NewH("success", updateThread))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", updateArticle))
 }
 
-func (c *ThreadsController) Delete(ctx controllers.Context) {
+func (c *ArticlesController) Delete(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
 		return
 	}
 
-	threadID, _ := strconv.Atoi(ctx.Param("id"))
+	articleID, _ := strconv.Atoi(ctx.Param("id"))
 
-	if res = c.Interactor.Delete(domain.Threads{
-		ID:     threadID,
+	if res = c.Interactor.Delete(domain.Articles{
+		ID:     articleID,
 		UserID: token.UserID,
 	}); res.ErrorMessage != nil {
 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))

@@ -11,7 +11,7 @@ import (
 type MeInteractor struct {
 	DB     usecase.DBRepository
 	Follow usecase.FollowRepository
-	Thread usecase.ThreadRepository
+	Thread usecase.ArticleRepository
 	User   usecase.UserRepository
 }
 

@@ -32,15 +32,23 @@ func (r *Routing) cors(c *Config) {
 
 func (r *Routing) setRouting() {
 
+	articlesController := product.NewArticlesController(r.DB)
 	commentsController := product.NewCommentsController(r.DB)
 	followsController := product.NewFollowsController(r.DB)
 	meController := product.NewMeController(r.DB)
-	threadsController := product.NewThreadsController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
 	usersController := product.NewUsersController(r.DB)
 
 	v1 := r.Gin.Group("/v1/product")
 	{
+		// Articles
+		v1.GET("/articles", func(ctx *gin.Context) { articlesController.GetList(ctx) })
+		v1.POST("/articles", func(ctx *gin.Context) { articlesController.Post(ctx) })
+
+		v1.GET("/articles/:id", func(ctx *gin.Context) { articlesController.Get(ctx) })
+		v1.PATCH("/articles/:id", func(ctx *gin.Context) { articlesController.Patch(ctx) })
+		v1.DELETE("/articles/:id", func(ctx *gin.Context) { articlesController.Delete(ctx) })
+
 		// Comment To Threads
 		v1.GET("/comments", func(ctx *gin.Context) { commentsController.GetList(ctx) })
 		v1.POST("/comments", func(ctx *gin.Context) { commentsController.Post(ctx) })
@@ -53,14 +61,6 @@ func (r *Routing) setRouting() {
 		v1.POST("/me", func(ctx *gin.Context) { meController.Post(ctx) })
 
 		v1.PATCH("/me", func(ctx *gin.Context) { meController.Patch(ctx) })
-
-		// Threads
-		v1.GET("/threads", func(ctx *gin.Context) { threadsController.GetList(ctx) })
-		v1.POST("/threads", func(ctx *gin.Context) { threadsController.Post(ctx) })
-
-		v1.GET("/threads/:id", func(ctx *gin.Context) { threadsController.Get(ctx) })
-		v1.PATCH("/threads/:id", func(ctx *gin.Context) { threadsController.Patch(ctx) })
-		v1.DELETE("/threads/:id", func(ctx *gin.Context) { threadsController.Delete(ctx) })
 
 		// Tokens
 		v1.POST("/tokens", func(ctx *gin.Context) { tokensController.Post(ctx) })
