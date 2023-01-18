@@ -34,6 +34,7 @@ func (r *Routing) setRouting() {
 
 	articlesController := product.NewArticlesController(r.DB)
 	commentsController := product.NewCommentsController(r.DB)
+	favoriteArticlesController := product.NewFavoriteArticlesController(r.DB)
 	followsController := product.NewFollowsController(r.DB)
 	meController := product.NewMeController(r.DB)
 	tokensController := product.NewTokensController(r.DB)
@@ -52,6 +53,11 @@ func (r *Routing) setRouting() {
 		// Comment To Threads
 		v1.GET("/comments", func(ctx *gin.Context) { commentsController.GetList(ctx) })
 		v1.POST("/comments", func(ctx *gin.Context) { commentsController.Post(ctx) })
+
+		// Favorites
+		// v1.GET("/favorites/article")
+		v1.PUT("/favoriteArticles", func(ctx *gin.Context) { favoriteArticlesController.Post(ctx) })
+		v1.DELETE("/favoriteArticles/:id", func(ctx *gin.Context) { favoriteArticlesController.Delete(ctx) })
 
 		// Followers
 		v1.GET("/follows", func(ctx *gin.Context) { followsController.GetList(ctx) })

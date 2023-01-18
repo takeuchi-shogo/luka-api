@@ -10,81 +10,81 @@ import (
 
 type ArticleRepository struct{}
 
-func (r *ArticleRepository) Find(db *gorm.DB) (threads []domain.Articles, err error) {
-	threads = []domain.Articles{}
-	db.Find(&threads)
-	if len(threads) <= 0 {
+func (r *ArticleRepository) Find(db *gorm.DB) (articles []domain.Articles, err error) {
+	articles = []domain.Articles{}
+	db.Find(&articles)
+	if len(articles) <= 0 {
 		return []domain.Articles{}, err
 	}
-	return threads, nil
+	return articles, nil
 }
 
-func (r *ArticleRepository) FindByID(db *gorm.DB, id int) (foundThread domain.Articles, err error) {
+func (r *ArticleRepository) FindByID(db *gorm.DB, id int) (foundArticle domain.Articles, err error) {
 
-	foundThread = domain.Articles{}
+	foundArticle = domain.Articles{}
 
-	db.First(&foundThread, id)
-	if foundThread.ID < 0 {
+	db.First(&foundArticle, id)
+	if foundArticle.ID < 0 {
 		return domain.Articles{}, errors.New("test error")
 	}
 
-	return foundThread, nil
+	return foundArticle, nil
 }
 
-func (r *ArticleRepository) FindByUserID(db *gorm.DB, userID int) (foundThreads []domain.Articles, err error) {
-	return foundThreads, nil
+func (r *ArticleRepository) FindByUserID(db *gorm.DB, userID int) (foundArticles []domain.Articles, err error) {
+	return foundArticles, nil
 }
 
-func (r *ArticleRepository) CountByUserID(db *gorm.DB, userID int) (threadCnt int, err error) {
-	threadCnt = 0
-	db.Model(&domain.Articles{}).Where("user_id = ?", userID).Count(&threadCnt)
-	return threadCnt, nil
+func (r *ArticleRepository) CountByUserID(db *gorm.DB, userID int) (articleCnt int, err error) {
+	articleCnt = 0
+	db.Model(&domain.Articles{}).Where("user_id = ?", userID).Count(&articleCnt)
+	return articleCnt, nil
 }
 
-func (r *ArticleRepository) Create(db *gorm.DB, article domain.Articles) (newThread domain.Articles, err error) {
+func (r *ArticleRepository) Create(db *gorm.DB, article domain.Articles) (newArticle domain.Articles, err error) {
 
-	newThread = domain.Articles{}
+	newArticle = domain.Articles{}
 
-	newThread.UserID = article.UserID
-	newThread.Title = article.Title
-	newThread.Description = article.Description
+	newArticle.UserID = article.UserID
+	newArticle.Title = article.Title
+	newArticle.Description = article.Description
 
 	currentTime := time.Now().Unix()
-	newThread.CreatedAt = currentTime
-	newThread.UpdatedAt = currentTime
-	newThread.DeletedAt = nil
+	newArticle.CreatedAt = currentTime
+	newArticle.UpdatedAt = currentTime
+	newArticle.DeletedAt = nil
 
-	if err := newThread.Validate(); err != nil {
+	if err := newArticle.Validate(); err != nil {
 		return domain.Articles{}, err
 	}
 
-	db.NewRecord(&newThread)
-	err = db.Create(&newThread).Error
+	db.NewRecord(&newArticle)
+	err = db.Create(&newArticle).Error
 
-	return newThread, err
+	return newArticle, err
 }
 
-func (r *ArticleRepository) Save(db *gorm.DB, article domain.Articles) (updateThread domain.Articles, err error) {
+func (r *ArticleRepository) Save(db *gorm.DB, article domain.Articles) (updateArticle domain.Articles, err error) {
 
-	updateThread = domain.Articles{}
+	updateArticle = domain.Articles{}
 
-	updateThread.ID = article.ID
-	updateThread.UserID = article.UserID
-	updateThread.Title = article.Title
-	updateThread.Description = article.Description
-	updateThread.CreatedAt = article.CreatedAt
-	updateThread.UpdatedAt = time.Now().Unix()
-	updateThread.DeletedAt = nil
+	updateArticle.ID = article.ID
+	updateArticle.UserID = article.UserID
+	updateArticle.Title = article.Title
+	updateArticle.Description = article.Description
+	updateArticle.CreatedAt = article.CreatedAt
+	updateArticle.UpdatedAt = time.Now().Unix()
+	updateArticle.DeletedAt = nil
 
-	if err := updateThread.Validate(); err != nil {
+	if err := updateArticle.Validate(); err != nil {
 		return domain.Articles{}, err
 	}
 
-	if err := db.Save(&updateThread).Error; err != nil {
+	if err := db.Save(&updateArticle).Error; err != nil {
 		return domain.Articles{}, err
 	}
 
-	return updateThread, nil
+	return updateArticle, nil
 }
 
 // 論理削除

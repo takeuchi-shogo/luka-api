@@ -5,16 +5,23 @@ import (
 
 	"github.com/takeuchi-shogo/luka-api/src/domain"
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
+	"github.com/takeuchi-shogo/luka-api/src/interface/database"
 	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
 type CommentsController struct {
+	Token      product.UserTokenInteractor
 	Interactor product.CommentInteractor
 }
 
 func NewCommentsController(db gateways.DB) *CommentsController {
 	return &CommentsController{
+		Token: product.UserTokenInteractor{
+			DB:        &gateways.DBRepository{DB: db},
+			User:      &database.UserRepository{},
+			UserToken: &database.UserTokenRepository{},
+		},
 		Interactor: product.CommentInteractor{},
 	}
 }
@@ -35,13 +42,21 @@ func (c *CommentsController) GetList(ctx controllers.Context) {
 
 func (c *CommentsController) Post(ctx controllers.Context) {
 
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
+
+	if res.ErrorMessage != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		return
+	}
+
 	articleID, _ := strconv.Atoi(ctx.PostForm("articleId"))
-	userID, _ := strconv.Atoi(ctx.PostForm("userId"))
+	toUserID, _ := strconv.Atoi(ctx.PostForm("toUserId"))
 	content := ctx.PostForm("content")
 
 	newComment, res := c.Interactor.Create(domain.Comments{
 		ArticleID: articleID,
-		UserID:    userID,
+		UserID:    token.UserID,
+		ToUserID:  toUserID,
 		Content:   content,
 	})
 	if res.ErrorMessage != nil {

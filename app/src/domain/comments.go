@@ -2,8 +2,9 @@ package domain
 
 type Comments struct {
 	ID        int    `json:"id"`
-	ArticleID int    `json:"articleId"`
 	UserID    int    `json:"userId"`
+	ToUserID  int    `json:"toUserID"`
+	ArticleID int    `json:"articleId"`
 	Content   string `json:"content"`
 
 	CreatedAt int64  `json:"createdAt"`

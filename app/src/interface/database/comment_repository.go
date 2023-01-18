@@ -35,6 +35,7 @@ func (r *CommentRepository) Create(db *gorm.DB, comment domain.Comments) (newCom
 
 	newComment.ArticleID = comment.ArticleID
 	newComment.UserID = comment.UserID
+	newComment.ToUserID = comment.ToUserID
 	newComment.Content = comment.Content
 
 	currentTime := time.Now().Unix()

@@ -37,7 +37,11 @@ var (
 	// Following
 	ErrFollowingNotFound = "フォローしているユーザーはいません"
 
-	// Favorites
-	ErrFavoriteCommentNotFound = "まだこのコメントにいいねはありません"
+	// Favorite Articles
 	ErrFavoriteArticleNotFound = "まだこのスレッドにいいねはありません"
+	ErrFavoriteArticleCreate   = "この記事にいいねできませんでした"
+	ErrDeleteFavoriteArticle   = "いいねの取り消しに失敗しました"
+
+	// Favorite Comments
+	ErrFavoriteCommentNotFound = "まだこのコメントにいいねはありません"
 )
