@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -75,6 +76,8 @@ func (r *ArticleRepository) Save(db *gorm.DB, article domain.Articles) (updateAr
 	updateArticle.CreatedAt = article.CreatedAt
 	updateArticle.UpdatedAt = time.Now().Unix()
 	updateArticle.DeletedAt = nil
+
+	fmt.Println(updateArticle)
 
 	if err := updateArticle.Validate(); err != nil {
 		return domain.Articles{}, err

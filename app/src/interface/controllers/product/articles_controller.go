@@ -99,7 +99,11 @@ func (c *ArticlesController) Patch(ctx controllers.Context) {
 		return
 	}
 
-	articleID, _ := strconv.Atoi(ctx.Param("articleId"))
+	articleID, articleIDErr := strconv.Atoi(ctx.Param("id"))
+	if articleIDErr != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(articleIDErr.Error(), nil))
+		return
+	}
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 

@@ -42,7 +42,7 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 	}
 
 	if foundUser.GetPassword(user.Password) != foundUser.Password {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, domain.ErrSignIn)
+		return domain.UserTokens{}, usecase.NewResultStatus(400, domain.ErrSignIn)
 	}
 
 	newUserToken := domain.UserTokens{}
