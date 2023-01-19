@@ -21,8 +21,8 @@ func (i *FavoriteCommentInteractor) GetList(commentID int) (favoriteCommentList 
 	favorites, err := i.FavoriteComment.FindByCommentID(db, commentID)
 
 	if err != nil {
-		return FavoriteCommentList{Lists: []domain.FavoriteComments{}}, usecase.NewResultStatus(400, domain.ErrFavoriteCommentNotFound)
+		return FavoriteCommentList{Lists: []domain.FavoriteComments{}}, usecase.NewResultStatus(400, err, domain.ErrFavoriteCommentNotFound)
 	}
 
-	return FavoriteCommentList{Lists: favorites}, usecase.NewResultStatus(200, "")
+	return FavoriteCommentList{Lists: favorites}, usecase.NewResultStatus(200, nil, "")
 }

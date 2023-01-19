@@ -30,8 +30,8 @@ func NewFavoriteArticlesController(db gateways.DB) *FavoriteArticlesController {
 
 func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -42,7 +42,7 @@ func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
 		ArticleID: articleID,
 	})
 
-	if res.ErrorMessage != nil {
+	if res.Error != nil {
 		return
 	}
 
@@ -51,16 +51,16 @@ func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
 
 func (c *FavoriteArticlesController) Delete(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
 	res = c.Interactor.Delete(id)
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 

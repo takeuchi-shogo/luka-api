@@ -35,8 +35,8 @@ func NewMeController(db gateways.DB) *MeController {
 func (c *MeController) Get(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.Query("accessToken"))
 
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -44,8 +44,8 @@ func (c *MeController) Get(ctx controllers.Context) {
 		ID: token.UserID,
 	})
 
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", me))
@@ -70,8 +70,8 @@ func (c *MeController) Post(ctx controllers.Context) {
 		Gender:      gender,
 		Prefecture:  prefecture,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -80,9 +80,9 @@ func (c *MeController) Post(ctx controllers.Context) {
 
 func (c *MeController) Patch(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
+	if res.Error != nil {
 		fmt.Println(res)
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -98,9 +98,9 @@ func (c *MeController) Patch(ctx controllers.Context) {
 	updateUser.Prefecture, _ = strconv.Atoi(ctx.PostForm("prefecture"))
 
 	user, res := c.Interactor.Save(updateUser)
-	if res.ErrorMessage != nil {
+	if res.Error != nil {
 		fmt.Println(res)
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", user))
@@ -108,16 +108,16 @@ func (c *MeController) Patch(ctx controllers.Context) {
 
 // func (c *MeController) Delete(ctx controllers.Context) {
 // 	_, res := c.Token.Authorization(ctx.PostForm("accessToken"))
-// 	if res.ErrorMessage != nil {
-// 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+// 	if res.Error != nil {
+// 		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 // 		return
 // 	}
 
 // 	screenName := ctx.Param("screenName")
 // 	if res := c.Interactor.Delete(domain.Users{
 // 		ScreenName: screenName,
-// 	}); res.ErrorMessage != nil {
-// 		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+// 	}); res.Error != nil {
+// 		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 // 		return
 // 	}
 // 	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))

@@ -16,10 +16,10 @@ func (i *CommentInteractor) GetList(comment domain.Comments) (comments []domain.
 
 	comments, err := i.Comment.FindByArticleID(db, comment.ArticleID)
 	if err != nil {
-		return []domain.Comments{}, usecase.NewResultStatus(400, domain.ErrCommentNotFound)
+		return []domain.Comments{}, usecase.NewResultStatus(400, err, domain.ErrCommentNotFound)
 	}
 
-	return comments, usecase.NewResultStatus(200, "")
+	return comments, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *CommentInteractor) Create(comment domain.Comments) (newComment domain.Comments, resultStatus *usecase.ResultStatus) {
@@ -28,8 +28,8 @@ func (i *CommentInteractor) Create(comment domain.Comments) (newComment domain.C
 
 	newComment, err := i.Comment.Create(db, comment)
 	if err != nil {
-		return domain.Comments{}, usecase.NewResultStatus(400, domain.ErrCreateComment)
+		return domain.Comments{}, usecase.NewResultStatus(400, err, domain.ErrCreateComment)
 	}
 
-	return newComment, usecase.NewResultStatus(200, "")
+	return newComment, usecase.NewResultStatus(200, nil, "")
 }

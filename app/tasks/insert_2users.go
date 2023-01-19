@@ -28,8 +28,8 @@ func main() {
 	for _, user := range users {
 		_, res := interactor.Create(user)
 
-		if res.ErrorMessage != nil {
-			fmt.Println(res.ErrorMessage.Error())
+		if res.Error != nil {
+			fmt.Println(res.Error.Error())
 			break
 		}
 	}

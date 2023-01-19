@@ -22,10 +22,10 @@ func (i *FavoriteArticleInteractor) GetList(ArticleID int) (favoriteArticleList 
 	favorites, err := i.FavoriteArticle.FindByArticleID(db, ArticleID)
 
 	if err != nil {
-		return FavoriteArticleList{Lists: []domain.FavoriteArticles{}}, usecase.NewResultStatus(400, domain.ErrFavoriteArticleNotFound)
+		return FavoriteArticleList{Lists: []domain.FavoriteArticles{}}, usecase.NewResultStatus(400, err, domain.ErrFavoriteArticleNotFound)
 	}
 
-	return FavoriteArticleList{Lists: favorites}, usecase.NewResultStatus(200, "")
+	return FavoriteArticleList{Lists: favorites}, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *FavoriteArticleInteractor) Create(favorite domain.FavoriteArticles) (newFavorite domain.FavoriteArticles, resultStatus *usecase.ResultStatus) {
@@ -33,15 +33,15 @@ func (i *FavoriteArticleInteractor) Create(favorite domain.FavoriteArticles) (ne
 	db := i.DB.Connect()
 
 	if _, err := i.Article.FindByID(db, favorite.ArticleID); err != nil {
-		return domain.FavoriteArticles{}, usecase.NewResultStatus(400, domain.ErrFavoriteArticleCreate)
+		return domain.FavoriteArticles{}, usecase.NewResultStatus(400, err, domain.ErrFavoriteArticleCreate)
 	}
 
 	newFavorite, err := i.FavoriteArticle.Create(db, favorite)
 
 	if err != nil {
-		return domain.FavoriteArticles{}, usecase.NewResultStatus(400, domain.ErrFavoriteArticleCreate)
+		return domain.FavoriteArticles{}, usecase.NewResultStatus(400, err, domain.ErrFavoriteArticleCreate)
 	}
-	return newFavorite, usecase.NewResultStatus(200, "")
+	return newFavorite, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *FavoriteArticleInteractor) Delete(id int) *usecase.ResultStatus {
@@ -51,12 +51,12 @@ func (i *FavoriteArticleInteractor) Delete(id int) *usecase.ResultStatus {
 	foundFavorite, err := i.FavoriteArticle.FindByID(db, id)
 
 	if err != nil {
-		return usecase.NewResultStatus(404, domain.ErrFavoriteArticleNotFound)
+		return usecase.NewResultStatus(404, err, domain.ErrFavoriteArticleNotFound)
 	}
 
 	if err = i.FavoriteArticle.Delete(db, foundFavorite.ID); err != nil {
-		return usecase.NewResultStatus(400, domain.ErrDeleteFavoriteArticle)
+		return usecase.NewResultStatus(400, err, domain.ErrDeleteFavoriteArticle)
 	}
 
-	return usecase.NewResultStatus(200, "")
+	return usecase.NewResultStatus(200, nil, "")
 }

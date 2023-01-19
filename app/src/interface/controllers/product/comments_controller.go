@@ -33,8 +33,8 @@ func (c *CommentsController) GetList(ctx controllers.Context) {
 	comments, res := c.Interactor.GetList(domain.Comments{
 		ArticleID: articleID,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", comments))
@@ -44,8 +44,8 @@ func (c *CommentsController) Post(ctx controllers.Context) {
 
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -59,8 +59,8 @@ func (c *CommentsController) Post(ctx controllers.Context) {
 		ToUserID:  toUserID,
 		Content:   content,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", newComment))

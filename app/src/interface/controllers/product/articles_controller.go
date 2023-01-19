@@ -7,6 +7,7 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
 	"github.com/takeuchi-shogo/luka-api/src/interface/database"
 	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
+	apierrors "github.com/takeuchi-shogo/luka-api/src/pkg/api-errors"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
@@ -35,16 +36,16 @@ func NewArticlesController(db gateways.DB) *ArticlesController {
 
 func (c *ArticlesController) Get(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
 	articleID, _ := strconv.Atoi(ctx.Param("id"))
 
 	article, res := c.Interactor.Get(articleID)
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -55,14 +56,14 @@ func (c *ArticlesController) Get(ctx controllers.Context) {
 func (c *ArticlesController) GetList(ctx controllers.Context) {
 
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
 	articles, res := c.Interactor.GetList()
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -72,8 +73,8 @@ func (c *ArticlesController) GetList(ctx controllers.Context) {
 
 func (c *ArticlesController) Post(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -85,8 +86,8 @@ func (c *ArticlesController) Post(ctx controllers.Context) {
 		Title:       title,
 		Description: description,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", article))
@@ -94,8 +95,8 @@ func (c *ArticlesController) Post(ctx controllers.Context) {
 
 func (c *ArticlesController) Patch(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -113,8 +114,8 @@ func (c *ArticlesController) Patch(ctx controllers.Context) {
 		Title:       title,
 		Description: description,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", updateArticle))
@@ -122,8 +123,8 @@ func (c *ArticlesController) Patch(ctx controllers.Context) {
 
 func (c *ArticlesController) Delete(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -132,8 +133,8 @@ func (c *ArticlesController) Delete(ctx controllers.Context) {
 	if res = c.Interactor.Delete(domain.Articles{
 		ID:     articleID,
 		UserID: token.UserID,
-	}); res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	}); res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(apierrors.BadRequest.New(res.Error, res.Message)))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))

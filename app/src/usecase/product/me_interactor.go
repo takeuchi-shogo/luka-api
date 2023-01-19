@@ -22,16 +22,16 @@ func (i *MeInteractor) Get(user domain.Users) (me domain.UsersForGet, resultStat
 	foundMe, err := i.User.FindByID(db, user.ID)
 
 	if err != nil {
-		return domain.UsersForGet{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return domain.UsersForGet{}, usecase.NewResultStatus(400, err, domain.ErrUserNotFound)
 	}
 
 	builtMe, err := i.build(db, foundMe)
 	if err != nil {
-		return domain.UsersForGet{}, usecase.NewResultStatus(400, err.Error())
+		return domain.UsersForGet{}, usecase.NewResultStatus(400, err, err.Error())
 	}
 	fmt.Println(builtMe)
 
-	return builtMe, usecase.NewResultStatus(200, "")
+	return builtMe, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *MeInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
@@ -39,14 +39,14 @@ func (i *MeInteractor) Create(user domain.Users) (newUser domain.Users, resultSa
 	db := i.DB.Connect()
 
 	if _, err := i.User.FindByScreenName(db, user.ScreenName); err == nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ExistUserScreenName)
+		return domain.Users{}, usecase.NewResultStatus(400, nil, domain.ExistUserScreenName)
 	}
 
 	newUser, err := i.User.Create(db, user)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrCreateUserAccount)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrCreateUserAccount)
 	}
-	return newUser, usecase.NewResultStatus(200, "")
+	return newUser, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i MeInteractor) Save(user domain.UserForPatch) (updatedMe domain.Users, resultStatus *usecase.ResultStatus) {
@@ -56,7 +56,7 @@ func (i MeInteractor) Save(user domain.UserForPatch) (updatedMe domain.Users, re
 	foundMe, err := i.User.FindByID(db, user.ID)
 
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrUserNotFound)
 	}
 
 	foundMe.ScreenName = user.ScreenName
@@ -70,10 +70,10 @@ func (i MeInteractor) Save(user domain.UserForPatch) (updatedMe domain.Users, re
 	updatedMe, err = i.User.Save(db, foundMe)
 
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrUserNotFound)
 	}
 
-	return updatedMe, usecase.NewResultStatus(200, "")
+	return updatedMe, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *MeInteractor) build(db *gorm.DB, me domain.Users) (builtMe domain.UsersForGet, err error) {

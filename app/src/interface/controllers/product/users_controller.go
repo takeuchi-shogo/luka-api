@@ -31,8 +31,8 @@ func NewUsersController(db gateways.DB) *UsersController {
 
 func (c *UsersController) Get(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -40,9 +40,9 @@ func (c *UsersController) Get(ctx controllers.Context) {
 	user, res := c.Interactor.Get(domain.Users{
 		ID: userID,
 	})
-	if res.ErrorMessage != nil {
+	if res.Error != nil {
 		// ここでLogとしてDevErrorを流す？
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
@@ -51,14 +51,14 @@ func (c *UsersController) Get(ctx controllers.Context) {
 
 func (c *UsersController) GetList(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.Query("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
 	users, res := c.Interactor.GetList(token.UserID)
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
 		return
 	}
 
