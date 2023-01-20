@@ -10,58 +10,55 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
-type CommentsController struct {
+type FollowsController struct {
 	Token      product.UserTokenInteractor
-	Interactor product.CommentInteractor
+	Interactor product.FollowInteractor
 }
 
-func NewCommentsController(db gateways.DB) *CommentsController {
-	return &CommentsController{
+func NewFollowsController(db gateways.DB) *FollowsController {
+	return &FollowsController{
 		Token: product.UserTokenInteractor{
 			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.CommentInteractor{},
+		Interactor: product.FollowInteractor{
+			DB:     &gateways.DBRepository{DB: db},
+			Follow: &database.FollowRepository{},
+		},
 	}
 }
 
-func (c *CommentsController) GetList(ctx controllers.Context) {
+func (c *FollowsController) GetList(ctx controllers.Context) {
 
-	articleID, _ := strconv.Atoi(ctx.Query("articleId"))
-
-	comments, res := c.Interactor.GetList(domain.Comments{
-		ArticleID: articleID,
+	userID, _ := strconv.Atoi(ctx.Query("userId"))
+	followers, res := c.Interactor.GetList(domain.Follows{
+		UserID: userID,
 	})
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
-	ctx.JSON(res.StatusCode, controllers.NewH("success", comments))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", followers))
 }
 
-func (c *CommentsController) Post(ctx controllers.Context) {
+func (c *FollowsController) Post(ctx controllers.Context) {
 
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
-
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
-	articleID, _ := strconv.Atoi(ctx.PostForm("articleId"))
 	toUserID, _ := strconv.Atoi(ctx.PostForm("toUserId"))
-	content := ctx.PostForm("content")
 
-	newComment, res := c.Interactor.Create(domain.Comments{
-		ArticleID: articleID,
-		UserID:    token.UserID,
-		ToUserID:  toUserID,
-		Content:   content,
+	newFollower, res := c.Interactor.Create(domain.Follows{
+		UserID:   token.UserID,
+		ToUserID: toUserID,
 	})
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
-	ctx.JSON(res.StatusCode, controllers.NewH("success", newComment))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", newFollower))
 }

@@ -16,16 +16,16 @@ func (i *UserInteractor) Get(user domain.Users) (foundUser domain.Users, resultS
 
 	user, err := i.User.FindByID(db, user.ID)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrGetUserAccount)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrGetUserAccount)
 	}
-	return user, usecase.NewResultStatus(200, "")
+	return user, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *UserInteractor) GetList(userID int) (users []domain.Users, resultStatus *usecase.ResultStatus) {
 
 	// db := i.DB.Connect()
 
-	return users, usecase.NewResultStatus(200, "")
+	return users, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *UserInteractor) Create(user domain.Users) (newUser domain.Users, resultSatus *usecase.ResultStatus) {
@@ -33,14 +33,14 @@ func (i *UserInteractor) Create(user domain.Users) (newUser domain.Users, result
 	db := i.DB.Connect()
 
 	if _, err := i.User.FindByScreenName(db, user.ScreenName); err == nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ExistUserScreenName)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ExistUserScreenName)
 	}
 
 	newUser, err := i.User.Create(db, user)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrCreateUserAccount)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrCreateUserAccount)
 	}
-	return newUser, usecase.NewResultStatus(200, "")
+	return newUser, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *UserInteractor) Save(user domain.UserForPatch) (updateUser domain.Users, resultStatus *usecase.ResultStatus) {
@@ -49,7 +49,7 @@ func (i *UserInteractor) Save(user domain.UserForPatch) (updateUser domain.Users
 
 	foundUser, err := i.User.FindByID(db, user.ID)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return domain.Users{}, usecase.NewResultStatus(400, err, domain.ErrUserNotFound)
 	}
 
 	foundUser.DisplayName = user.DisplayName
@@ -63,10 +63,10 @@ func (i *UserInteractor) Save(user domain.UserForPatch) (updateUser domain.Users
 
 	updateUser, err = i.User.Save(db, foundUser)
 	if err != nil {
-		return domain.Users{}, usecase.NewResultStatus(404, domain.ErrUpdateUserAccount)
+		return domain.Users{}, usecase.NewResultStatus(404, err, domain.ErrUpdateUserAccount)
 	}
 
-	return updateUser, usecase.NewResultStatus(200, "")
+	return updateUser, usecase.NewResultStatus(200, nil, "")
 }
 
 func (i *UserInteractor) Delete(user domain.Users) *usecase.ResultStatus {
@@ -75,11 +75,11 @@ func (i *UserInteractor) Delete(user domain.Users) *usecase.ResultStatus {
 
 	foundUser, err := i.User.FindByScreenName(db, user.ScreenName)
 	if err != nil {
-		return usecase.NewResultStatus(400, domain.ErrUserNotFound)
+		return usecase.NewResultStatus(400, err, domain.ErrUserNotFound)
 	}
 
 	if err = i.User.Delete(db, foundUser); err != nil {
-		return usecase.NewResultStatus(404, domain.ErrDeleteUserAccount)
+		return usecase.NewResultStatus(404, err, domain.ErrDeleteUserAccount)
 	}
-	return usecase.NewResultStatus(200, "")
+	return usecase.NewResultStatus(200, nil, "")
 }

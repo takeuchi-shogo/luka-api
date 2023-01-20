@@ -6,3 +6,6 @@ config.go
 main
 
 .env
+
+/app/tmp/*
+wait-for.sh

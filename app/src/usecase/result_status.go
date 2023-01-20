@@ -1,21 +1,21 @@
 package usecase
 
-import "errors"
-
 type ResultStatus struct {
-	ErrorMessage error
-	StatusCode   int // ステータスコード
+	Error      error  // error message
+	StatusCode int    // status code
+	Message    string // info error message
 }
 
-func NewResultStatus(code int, errorMessage string) *ResultStatus {
+func NewResultStatus(code int, err error, message string) *ResultStatus {
 
 	resultStatus := new(ResultStatus)
 
 	resultStatus.StatusCode = code
-	if errorMessage != "" {
-		resultStatus.ErrorMessage = errors.New(errorMessage)
+	resultStatus.Message = message
+	if err != nil {
+		resultStatus.Error = err
 	} else {
-		resultStatus.ErrorMessage = nil
+		resultStatus.Error = nil
 	}
 
 	return resultStatus

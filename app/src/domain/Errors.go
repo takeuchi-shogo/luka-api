@@ -18,11 +18,11 @@ var (
 	ErrTokenExpire        = "承認に失敗しました"
 	ErrRefreshTokenExpire = "トークンの有効期限が切れています"
 
-	// Thread
-	ErrCreateThread   = "スレッドの作成に失敗しました"
-	ErrSaveThread     = "スレッドの編集に失敗しました"
-	ErrDeleteThread   = "スレッドの削除に失敗しました"
-	ErrThreadNotFound = "スレッドが見つかりません"
+	// Article
+	ErrCreateArticle   = "スレッドの作成に失敗しました"
+	ErrSaveArticle     = "スレッドの編集に失敗しました"
+	ErrDeleteArticle   = "スレッドの削除に失敗しました"
+	ErrArticleNotFound = "スレッドが見つかりません"
 
 	// Comment
 	ErrCreateComment = "コメントの作成に失敗しました"
@@ -32,5 +32,16 @@ var (
 	// Follower
 	ErrCreateFollower = "フォロワーの作成に失敗しました"
 
-	ErrFollowerNotFound = "フォローしているユーザーはいません"
+	ErrFollowerNotFound = "フォローされているユーザーはいません"
+
+	// Following
+	ErrFollowingNotFound = "フォローしているユーザーはいません"
+
+	// Favorite Articles
+	ErrFavoriteArticleNotFound = "まだこのスレッドにいいねはありません"
+	ErrFavoriteArticleCreate   = "この記事にいいねできませんでした"
+	ErrDeleteFavoriteArticle   = "いいねの取り消しに失敗しました"
+
+	// Favorite Comments
+	ErrFavoriteCommentNotFound = "まだこのコメントにいいねはありません"
 )

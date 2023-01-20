@@ -1,5 +1,5 @@
 
-CREATE TABLE `threads` (
+CREATE TABLE `articles` (
     `id` int UNSIGNED NOT NULL,
     `user_id` int UNSIGNED NOT NULL,
     `title` varchar(50) NOT NULL,
@@ -9,8 +9,8 @@ CREATE TABLE `threads` (
     `deleted_at`int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-ALTER TABLE `threads`
+ALTER TABLE `articles`
     ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `threads`
+ALTER TABLE `articles`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;

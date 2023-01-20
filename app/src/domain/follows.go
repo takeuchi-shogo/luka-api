@@ -1,6 +1,6 @@
 package domain
 
-type Followers struct {
+type Follows struct {
 	ID       int `json:"id"`
 	UserID   int `json:"userId"`
 	ToUserID int `json:"toUserId"`

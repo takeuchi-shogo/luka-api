@@ -10,57 +10,59 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
-type UsersController struct {
+type FavoriteArticlesController struct {
 	Token      product.UserTokenInteractor
-	Interactor product.UserInteractor
+	Interactor product.FavoriteArticleInteractor
 }
 
-func NewUsersController(db gateways.DB) *UsersController {
-	return &UsersController{
+func NewFavoriteArticlesController(db gateways.DB) *FavoriteArticlesController {
+	return &FavoriteArticlesController{
 		Token: product.UserTokenInteractor{
 			DB:        &gateways.DBRepository{DB: db},
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.UserInteractor{
-			DB:   &gateways.DBRepository{DB: db},
-			User: &database.UserRepository{},
+		Interactor: product.FavoriteArticleInteractor{
+			DB: &gateways.DBRepository{DB: db},
 		},
 	}
 }
 
-func (c *UsersController) Get(ctx controllers.Context) {
-	_, res := c.Token.Verification(ctx.Query("accessToken"))
+func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
-	userID, _ := strconv.Atoi(ctx.Param("id"))
-	user, res := c.Interactor.Get(domain.Users{
-		ID: userID,
+	articleID, _ := strconv.Atoi(ctx.PostForm("articleId"))
+
+	favorite, res := c.Interactor.Create(domain.FavoriteArticles{
+		UserID:    token.UserID,
+		ArticleID: articleID,
 	})
+
 	if res.Error != nil {
-		// ここでLogとしてDevErrorを流す？
-		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
-	ctx.JSON(200, controllers.NewH("success", user))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", favorite))
 }
 
-func (c *UsersController) GetList(ctx controllers.Context) {
-	token, res := c.Token.Verification(ctx.Query("accessToken"))
+func (c *FavoriteArticlesController) Delete(ctx controllers.Context) {
+	_, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
-	users, res := c.Interactor.GetList(token.UserID)
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	res = c.Interactor.Delete(id)
 	if res.Error != nil {
 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
-	ctx.JSON(res.StatusCode, controllers.NewH("success", users))
+	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))
 }

@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/takeuchi-shogo/luka-api/src/domain"
@@ -12,7 +13,7 @@ import (
 
 type MeController struct {
 	Token      product.UserTokenInteractor
-	Interactor product.UserInteractor
+	Interactor product.MeInteractor
 }
 
 func NewMeController(db gateways.DB) *MeController {
@@ -22,18 +23,20 @@ func NewMeController(db gateways.DB) *MeController {
 			User:      &database.UserRepository{},
 			UserToken: &database.UserTokenRepository{},
 		},
-		Interactor: product.UserInteractor{
-			DB:   &gateways.DBRepository{DB: db},
-			User: &database.UserRepository{},
+		Interactor: product.MeInteractor{
+			DB:     &gateways.DBRepository{DB: db},
+			Follow: &database.FollowRepository{},
+			Thread: &database.ArticleRepository{},
+			User:   &database.UserRepository{},
 		},
 	}
 }
 
 func (c *MeController) Get(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.Query("accessToken"))
+	token, res := c.Token.Verification(ctx.Query("accessToken"))
 
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -41,8 +44,8 @@ func (c *MeController) Get(ctx controllers.Context) {
 		ID: token.UserID,
 	})
 
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", me))
@@ -55,8 +58,8 @@ func (c *MeController) Post(ctx controllers.Context) {
 	password := ctx.PostForm("password")
 	email := ctx.PostForm("email")
 	age, _ := strconv.Atoi(ctx.PostForm("age"))
-	gender := ctx.PostForm("gender")
-	prefecture := ctx.PostForm("prefecture")
+	gender, _ := strconv.Atoi(ctx.PostForm("gender"))
+	prefecture, _ := strconv.Atoi(ctx.PostForm("prefecture"))
 
 	newUser, res := c.Interactor.Create(domain.Users{
 		DisplayName: displayName,
@@ -67,8 +70,8 @@ func (c *MeController) Post(ctx controllers.Context) {
 		Gender:      gender,
 		Prefecture:  prefecture,
 	})
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -76,9 +79,9 @@ func (c *MeController) Post(ctx controllers.Context) {
 }
 
 func (c *MeController) Patch(ctx controllers.Context) {
-	token, res := c.Token.Authorization(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
+	if res.Error != nil {
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -90,30 +93,31 @@ func (c *MeController) Patch(ctx controllers.Context) {
 	updateUser.Password = ctx.PostForm("password")
 	updateUser.Email = ctx.PostForm("email")
 	updateUser.Age, _ = strconv.Atoi(ctx.PostForm("age"))
-	updateUser.Gender = ctx.PostForm("gender")
-	updateUser.Prefecture = ctx.PostForm("prefecture")
+	updateUser.Gender, _ = strconv.Atoi(ctx.PostForm("gender"))
+	updateUser.Prefecture, _ = strconv.Atoi(ctx.PostForm("prefecture"))
 
 	user, res := c.Interactor.Save(updateUser)
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
+	if res.Error != nil {
+		fmt.Println(res)
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", user))
 }
 
-func (c *MeController) Delete(ctx controllers.Context) {
-	_, res := c.Token.Authorization(ctx.PostForm("accessToken"))
-	if res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
-		return
-	}
+// func (c *MeController) Delete(ctx controllers.Context) {
+// 	_, res := c.Token.Authorization(ctx.PostForm("accessToken"))
+// 	if res.Error != nil {
+// 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
+// 		return
+// 	}
 
-	screenName := ctx.Param("screenName")
-	if res := c.Interactor.Delete(domain.Users{
-		ScreenName: screenName,
-	}); res.ErrorMessage != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.ErrorMessage.Error(), nil))
-		return
-	}
-	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))
-}
+// 	screenName := ctx.Param("screenName")
+// 	if res := c.Interactor.Delete(domain.Users{
+// 		ScreenName: screenName,
+// 	}); res.Error != nil {
+// 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
+// 		return
+// 	}
+// 	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))
+// }
