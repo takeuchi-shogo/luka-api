@@ -31,7 +31,7 @@ func NewFavoriteArticlesController(db gateways.DB) *FavoriteArticlesController {
 func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -52,7 +52,7 @@ func (c *FavoriteArticlesController) Post(ctx controllers.Context) {
 func (c *FavoriteArticlesController) Delete(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -60,7 +60,7 @@ func (c *FavoriteArticlesController) Delete(ctx controllers.Context) {
 
 	res = c.Interactor.Delete(id)
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 

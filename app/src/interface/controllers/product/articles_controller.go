@@ -7,7 +7,6 @@ import (
 	"github.com/takeuchi-shogo/luka-api/src/interface/controllers"
 	"github.com/takeuchi-shogo/luka-api/src/interface/database"
 	"github.com/takeuchi-shogo/luka-api/src/interface/gateways"
-	apierrors "github.com/takeuchi-shogo/luka-api/src/pkg/api-errors"
 	"github.com/takeuchi-shogo/luka-api/src/usecase/product"
 )
 
@@ -134,7 +133,7 @@ func (c *ArticlesController) Delete(ctx controllers.Context) {
 		ID:     articleID,
 		UserID: token.UserID,
 	}); res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(apierrors.BadRequest.New(res.Error, res.Message)))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))

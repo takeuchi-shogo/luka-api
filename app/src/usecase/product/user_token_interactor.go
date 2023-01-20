@@ -1,6 +1,8 @@
 package product
 
 import (
+	"errors"
+	"net/http"
 	"time"
 
 	"github.com/takeuchi-shogo/luka-api/src/domain"
@@ -29,7 +31,7 @@ func (i *UserTokenInteractor) Verification(accessToken string) (token domain.Use
 		return domain.UserTokens{}, usecase.NewResultStatus(406, err, domain.ErrTokenExpire)
 	}
 
-	return token, usecase.NewResultStatus(200, nil, "")
+	return token, usecase.NewResultStatus(http.StatusOK, nil, "")
 }
 
 func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTokens, resultStatus *usecase.ResultStatus) {
@@ -38,11 +40,11 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 
 	foundUser, err := i.User.FindByScreenName(db, user.ScreenName)
 	if err != nil {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, err, domain.ErrSignIn)
+		return domain.UserTokens{}, usecase.NewResultStatus(401, err, domain.ErrSignIn)
 	}
 
 	if foundUser.GetPassword(user.Password) != foundUser.Password {
-		return domain.UserTokens{}, usecase.NewResultStatus(400, err, domain.ErrSignIn)
+		return domain.UserTokens{}, usecase.NewResultStatus(401, errors.New("id and password required"), domain.ErrSignIn)
 	}
 
 	newUserToken := domain.UserTokens{}
@@ -50,7 +52,7 @@ func (i *UserTokenInteractor) Create(user domain.Users) (newToken domain.UserTok
 
 	token, err := i.UserToken.Create(db, newUserToken)
 	if err != nil {
-		return domain.UserTokens{}, usecase.NewResultStatus(404, err, domain.ErrCreateUserToken)
+		return domain.UserTokens{}, usecase.NewResultStatus(401, err, domain.ErrCreateUserToken)
 	}
 
 	return token, usecase.NewResultStatus(200, nil, "")

@@ -32,7 +32,7 @@ func NewUsersController(db gateways.DB) *UsersController {
 func (c *UsersController) Get(ctx controllers.Context) {
 	_, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -42,7 +42,7 @@ func (c *UsersController) Get(ctx controllers.Context) {
 	})
 	if res.Error != nil {
 		// ここでLogとしてDevErrorを流す？
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -52,13 +52,13 @@ func (c *UsersController) Get(ctx controllers.Context) {
 func (c *UsersController) GetList(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.Query("accessToken"))
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
 	users, res := c.Interactor.GetList(token.UserID)
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 

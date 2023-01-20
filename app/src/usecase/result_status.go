@@ -1,9 +1,9 @@
 package usecase
 
 type ResultStatus struct {
-	Error      error
-	StatusCode int // ステータスコード
-	Message    string
+	Error      error  // error message
+	StatusCode int    // status code
+	Message    string // info error message
 }
 
 func NewResultStatus(code int, err error, message string) *ResultStatus {

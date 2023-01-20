@@ -36,7 +36,7 @@ func (c *FollowsController) GetList(ctx controllers.Context) {
 		UserID: userID,
 	})
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", followers))
@@ -46,7 +46,7 @@ func (c *FollowsController) Post(ctx controllers.Context) {
 
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -57,7 +57,7 @@ func (c *FollowsController) Post(ctx controllers.Context) {
 		ToUserID: toUserID,
 	})
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", newFollower))

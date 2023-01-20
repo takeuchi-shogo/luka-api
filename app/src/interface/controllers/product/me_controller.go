@@ -36,7 +36,7 @@ func (c *MeController) Get(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.Query("accessToken"))
 
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -45,7 +45,7 @@ func (c *MeController) Get(ctx controllers.Context) {
 	})
 
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", me))
@@ -71,7 +71,7 @@ func (c *MeController) Post(ctx controllers.Context) {
 		Prefecture:  prefecture,
 	})
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -81,8 +81,7 @@ func (c *MeController) Post(ctx controllers.Context) {
 func (c *MeController) Patch(ctx controllers.Context) {
 	token, res := c.Token.Verification(ctx.PostForm("accessToken"))
 	if res.Error != nil {
-		fmt.Println(res)
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 
@@ -100,7 +99,7 @@ func (c *MeController) Patch(ctx controllers.Context) {
 	user, res := c.Interactor.Save(updateUser)
 	if res.Error != nil {
 		fmt.Println(res)
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", user))
@@ -109,7 +108,7 @@ func (c *MeController) Patch(ctx controllers.Context) {
 // func (c *MeController) Delete(ctx controllers.Context) {
 // 	_, res := c.Token.Authorization(ctx.PostForm("accessToken"))
 // 	if res.Error != nil {
-// 		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+// 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 // 		return
 // 	}
 
@@ -117,7 +116,7 @@ func (c *MeController) Patch(ctx controllers.Context) {
 // 	if res := c.Interactor.Delete(domain.Users{
 // 		ScreenName: screenName,
 // 	}); res.Error != nil {
-// 		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+// 		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 // 		return
 // 	}
 // 	ctx.JSON(res.StatusCode, controllers.NewH("success", nil))

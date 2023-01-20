@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -25,8 +24,8 @@ func (r *ArticleRepository) FindByID(db *gorm.DB, id int) (foundArticle domain.A
 	foundArticle = domain.Articles{}
 
 	db.First(&foundArticle, id)
-	if foundArticle.ID < 0 {
-		return domain.Articles{}, errors.New("test error")
+	if foundArticle.ID <= 0 {
+		return domain.Articles{}, fmt.Errorf("article is not found: %v", id)
 	}
 
 	return foundArticle, nil

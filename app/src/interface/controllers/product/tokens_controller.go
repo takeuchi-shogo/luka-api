@@ -30,8 +30,9 @@ func (c *TokensController) Post(ctx controllers.Context) {
 		ScreenName: userInfo,
 		Password:   password,
 	})
+	// fmt.Println(res)
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", token))
@@ -46,7 +47,7 @@ func (c *TokensController) Refresh(ctx controllers.Context) {
 		RefreshToken: refreshToken,
 	})
 	if res.Error != nil {
-		ctx.JSON(res.StatusCode, controllers.NewH(res.Error.Error(), nil))
+		ctx.JSON(res.StatusCode, controllers.NewErrorResponse(res.Error, res.Message))
 		return
 	}
 	ctx.JSON(res.StatusCode, controllers.NewH("success", token))

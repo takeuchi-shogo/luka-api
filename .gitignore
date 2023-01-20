@@ -7,4 +7,5 @@ main
 
 .env
 
+/app/tmp/*
 wait-for.sh

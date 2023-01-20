@@ -1,16 +1,16 @@
 package controllers
 
-import (
-	apierrors "github.com/takeuchi-shogo/luka-api/src/pkg/api-errors"
-)
-
 type ErrorResponse struct {
-	Error apierrors.ApiError `json:"error"`
+	Error struct {
+		Message     string `json:"message"`
+		InfoMessage string `json:"infoMessage"`
+	} `json:"error"`
 }
 
-func NewErrorResponse(err apierrors.ApiError) *ErrorResponse {
+func NewErrorResponse(err error, msg string) *ErrorResponse {
 	res := new(ErrorResponse)
-	res.Error = err
+	res.Error.Message = err.Error()
+	res.Error.InfoMessage = msg
 
 	return res
 }

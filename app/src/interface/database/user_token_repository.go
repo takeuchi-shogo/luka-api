@@ -47,5 +47,5 @@ func (r *UserTokenRepository) Create(db *gorm.DB, userToken domain.UserTokens) (
 	db.NewRecord(newToken)
 	err = db.Create(&newToken).Error
 
-	return newToken, nil
+	return newToken, err
 }
