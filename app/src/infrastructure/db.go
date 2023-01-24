@@ -39,7 +39,7 @@ func (db *DB) connect(host string, username string, password string, dbName stri
 			time.Sleep(time.Second)
 			count++
 			if count > 10 {
-				fmt.Print("DBの接続に失敗しました\n")
+				fmt.Print("database connection failed\n")
 				panic(err.Error())
 			}
 			connection, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, dbName))
@@ -47,7 +47,7 @@ func (db *DB) connect(host string, username string, password string, dbName stri
 		}
 	}
 
-	fmt.Print("DBに接続\n")
+	fmt.Print("database connection success\n")
 
 	return connection
 }
