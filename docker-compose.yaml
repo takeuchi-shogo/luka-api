@@ -68,6 +68,17 @@ services:
         - VIRTUAL_HOST=phpmyadmin.luka.lv
     networks:
         - luka-network
+  
+  nginx-proxy:
+    container_name: luka-nginx-proxy
+    image: jwilder/nginx-proxy:0.9.0
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      # - ./nginx/server.conf:/etc/nginx/conf.d/server.conf
+    networks:
+      - luka-network
 
 networks:
     luka-network:
