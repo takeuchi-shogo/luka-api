@@ -6,7 +6,7 @@ metadata:
 
 # pod
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: luka-api
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: luka-api-node
-        image: sgtkuc18m/luka-api
+        image: sgtkuc18m/luka-api:v1.0.3
         resources:
           limits:
             memory: "128Mi"

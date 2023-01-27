@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: luka-api-pod
+  labels:
+    name: luka-api-pod
+spec:
+  containers:
+  - name: luka-api-pod
+    image: luka-api:latest # Docker image
+    imagePullPolicy: Never # default "IfNotPresent"
+    # command: ["bin", "dev"] # docker ENTRYPOINT
+    # args: #docker CMD
+    # - |
+    # env: [{name: "sample"}] # enviroment
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 8080

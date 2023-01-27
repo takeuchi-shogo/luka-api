@@ -8,7 +8,7 @@ require (
 	github.com/go-redis/redis/v9 v9.0.0-rc.2
 	github.com/jinzhu/gorm v1.9.16
 	github.com/spf13/viper v1.14.0
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	golang.org/x/crypto v0.1.0
 )
 
 require (
