@@ -68,6 +68,41 @@ services:
         - VIRTUAL_HOST=phpmyadmin.luka.lv
     networks:
         - luka-network
+
+  elasticsearch:
+    build: ./elasticsearch/
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512M -Xmx512M"
+      - "TZ=Asia/Tokyo"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    restart: always
+    networks:
+      - luka-network
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.0.0
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - "TZ=Asia/Tokyo"
+      - I18N_LOCALE="ja-JP"
+    depends_on:
+      - elasticsearch
+    restart: always
+    networks:
+      - luka-network
+
   
   # nginx:
   #   container_name: luka-nginx
@@ -81,7 +116,10 @@ services:
   #   networks:
   #     - luka-network
 
+volumes:
+  es-data:
+    name: luka-volume-es
+
 networks:
     luka-network:
         name: luka_network
-  

@@ -6,6 +6,7 @@ func main() {
 	config := infrastructure.NewConfig()
 	db := infrastructure.NewDB(config)
 	// _ = infrastructure.NewRedis()
+	infrastructure.NewElasticSearch()
 
 	r := infrastructure.NewRouting(config, db)
 
